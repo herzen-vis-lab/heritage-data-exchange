@@ -1,8 +1,8 @@
-# Ru-federated-cultural-ai-exchange.uml v.0.0.1
+# ru-federated-cultural-ai-exchange.uml v.0.0.1
 ```mermaid
 classDiagram
 
-class Heritage-data-exchange{
+class HeritageDataExchange{
     +string standard
     +string version
     +datetime generated_at
@@ -14,7 +14,7 @@ class Organization {
     +string url
 }
 
-class CulturalObject {
+class DigitalObject {
     +string object_guid
     +string url
     +string[] tags
@@ -26,9 +26,16 @@ class Type {
     +string type_parent_vocabulary
 }
 
-class LocalizedText {
+class Title {
     +string ru
     +string en
+    +string etc
+}
+
+class Description {
+    +string ru
+    +string en
+    +string etc
 }
 
 class Metadata {
@@ -52,13 +59,13 @@ class Rights {
     +string holder
 }
 
-class RelatedObject {
+class RelatedDigitalObject {
     +string relation
     +string object_guid
     +string organization_guid
 }
 
-class AIAnnotation {
+class AI {
     +string model
     +datetime generated_at
     +string[] detected_objects
@@ -67,22 +74,24 @@ class AIAnnotation {
 class Caption {
     +string ru
     +string en
+    +string etc
 }
 
 %% Relationships
 
-Heritage-data-exchange "1" --> "1" Organization
-Heritage-data-exchange "1" --> "many" CulturalObject
-
-CulturalObject "1" --> "1" Type
-CulturalObject "1" --> "1" Metadata
-CulturalObject "1" --> "0..*" RelatedObject
-CulturalObject "0..1" --> "1" AIAnnotation
-CulturalObject "1" --> "1" LocalizedText : title
-CulturalObject "1" --> "1" LocalizedText : description
+HeritageDataExchange "1" --> "0..*" DigitalObject
+DigitalObject "1" --> "1" Organization
+DigitalObject "1" --> "1" Type
+DigitalObject "1" --> "1" Metadata
+DigitalObject "1" --> "0..*" RelatedDigitalObject
+DigitalObject "1" --> "0..1" AI
+DigitalObject "1" --> "1" Title
+DigitalObject "1" --> "1" Description
 
 Metadata "1" --> "1" Core
 Metadata "1" --> "1" Rights
 
-AIAnnotation "1" --> "1" Caption
+RelatedDigitalObject "1" --> "1" DigitalObject : target
+AI "1" --> "1" Caption
+
 ```
