@@ -61,8 +61,6 @@ class Rights {
 
 class RelatedDigitalObject {
     +string relation
-    +string object_guid
-    +string organization_guid
 }
 
 class AI {
