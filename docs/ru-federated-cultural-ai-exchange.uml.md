@@ -27,15 +27,13 @@ class Type {
 }
 
 class Title {
-    +string ru
-    +string en
-    +string etc
+    +string language
+    +string value
 }
 
 class Description {
-    +string ru
-    +string en
-    +string etc
+    +string language
+    +string value
 }
 
 class Metadata {
@@ -83,8 +81,8 @@ DigitalObject "1" --> "1" Type
 DigitalObject "1" --> "1" Metadata
 DigitalObject "1" --> "0..*" DigitalObjectRelation : source
 DigitalObject "1" --> "0..1" AI
-DigitalObject "1" --> "1" Title
-DigitalObject "1" --> "1" Description
+DigitalObject "1" --> "0..*"  Title
+DigitalObject "1" --> "0..*"  Description
 
 Metadata "1" --> "1" Core
 Metadata "1" --> "1" Rights
