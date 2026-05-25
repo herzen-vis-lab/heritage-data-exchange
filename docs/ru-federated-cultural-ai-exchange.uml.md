@@ -1,7 +1,7 @@
 ```mermaid
 classDiagram
 
-class CulturalStandard {
+class Ru-federated-cultural-ai-exchange_v.0.0.1 {
     +string standard
     +string version
     +datetime generated_at
