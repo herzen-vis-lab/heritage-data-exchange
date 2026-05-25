@@ -59,7 +59,7 @@ class Rights {
     +string holder
 }
 
-class RelatedDigitalObject {
+class DigitalObjectRelation {
     +string relation
 }
 
@@ -81,7 +81,7 @@ HeritageDataExchange "1" --> "0..*" DigitalObject
 DigitalObject "1" --> "1" Organization
 DigitalObject "1" --> "1" Type
 DigitalObject "1" --> "1" Metadata
-DigitalObject "1" --> "0..*" RelatedDigitalObject
+DigitalObject "1" --> "0..*" DigitalObjectRelation : source
 DigitalObject "1" --> "0..1" AI
 DigitalObject "1" --> "1" Title
 DigitalObject "1" --> "1" Description
@@ -89,7 +89,7 @@ DigitalObject "1" --> "1" Description
 Metadata "1" --> "1" Core
 Metadata "1" --> "1" Rights
 
-RelatedDigitalObject "1" --> "1" DigitalObject : target
+DigitalObjectRelation "1" --> "1" DigitalObject : target
 AI "1" --> "1" Caption
 
 ```
