@@ -1,7 +1,8 @@
+# Ru-federated-cultural-ai-exchange.uml v.0.0.1
 ```mermaid
 classDiagram
 
-class Ru-federated-cultural-ai-exchange_v.0.0.1 {
+class Heritage-data-exchange{
     +string standard
     +string version
     +datetime generated_at
@@ -70,8 +71,8 @@ class Caption {
 
 %% Relationships
 
-CulturalStandard "1" --> "1" Organization
-CulturalStandard "1" --> "many" CulturalObject
+Heritage-data-exchange "1" --> "1" Organization
+Heritage-data-exchange "1" --> "many" CulturalObject
 
 CulturalObject "1" --> "1" Type
 CulturalObject "1" --> "1" Metadata
