@@ -82,7 +82,7 @@ class Caption {
 %% Relationships
 
 HeritageDataExchange "1" --> "0..*" DigitalObject
-DigitalObject "1" --> "1" Organization
+DigitalObject "1" --> "0..*" Organization
 DigitalObject "1" --> "0..*" Type
 DigitalObject "1" --> "1" Metadata
 Metadata "1" --> "1" Core
