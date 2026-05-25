@@ -1,3 +1,4 @@
+```mermaid
 classDiagram
 
 class CulturalStandard {
@@ -83,3 +84,4 @@ Metadata "1" --> "1" Core
 Metadata "1" --> "1" Rights
 
 AIAnnotation "1" --> "1" Caption
+```
