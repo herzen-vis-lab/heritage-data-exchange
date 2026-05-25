@@ -14,16 +14,21 @@ class Organization {
     +string url
 }
 
+class RealObject {
+    +string external_id
+    +string authority
+    +string url
+}
+
 class DigitalObject {
-    +string object_guid
+    +string digital_object_guid
     +string url
     +string[] tags
 }
 
 class Type {
     +string value
-    +string type_parent
-    +string type_parent_vocabulary
+    +string authority
 }
 
 class Title {
@@ -68,26 +73,24 @@ class AI {
 }
 
 class Caption {
-    +string ru
-    +string en
-    +string etc
+    +string language
+    +string value
 }
 
 %% Relationships
 
 HeritageDataExchange "1" --> "0..*" DigitalObject
 DigitalObject "1" --> "1" Organization
-DigitalObject "1" --> "1" Type
+DigitalObject "1" --> "0..*" Type
 DigitalObject "1" --> "1" Metadata
-DigitalObject "1" --> "0..*" DigitalObjectRelation : source
-DigitalObject "1" --> "0..1" AI
-DigitalObject "1" --> "0..*"  Title
-DigitalObject "1" --> "0..*"  Description
-
 Metadata "1" --> "1" Core
 Metadata "1" --> "1" Rights
-
+DigitalObject "1" --> "0..*" DigitalObjectRelation : source
+DigitalObject "1" --> "1" RealObject : represents
+DigitalObject "1" --> "0..1" AI
+AI "1" --> "0..*" Caption
+DigitalObject "1" --> "0..*"  Title
+DigitalObject "1" --> "0..*"  Description
 DigitalObjectRelation "1" --> "1" DigitalObject : target
-AI "1" --> "1" Caption
 
 ```
