@@ -64,6 +64,7 @@ class Rights {
 
 class DigitalObjectRelation {
     +string relation
+    +string authority
 }
 
 class AI {
