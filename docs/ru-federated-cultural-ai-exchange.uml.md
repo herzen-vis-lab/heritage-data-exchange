@@ -87,7 +87,7 @@ DigitalObject "1" --> "1" Metadata
 Metadata "1" --> "1" Core
 Metadata "1" --> "1" Rights
 DigitalObject "1" --> "0..*" DigitalObjectRelation : source
-DigitalObject "1" --> "1" RealObject : represents
+DigitalObject "1" --> "0..1" RealObject : represents
 DigitalObject "1" --> "0..1" AI
 AI "1" --> "0..*" Caption
 DigitalObject "1" --> "0..*"  Title
