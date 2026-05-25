@@ -1,0 +1,128 @@
+{
+  "@context": {
+    "@vocab": "https://example.org/cultural-object#",
+    "@version": "1.0.0"
+
+    "object_guid": "@id",
+    "type": "@type",
+    "schema_version": "0.0.1"
+    "title": {
+      "@id": "schema:name",
+      "@container": "@language"
+    },
+
+    "description": {
+      "@id": "schema:description",
+      "@container": "@language"
+    },
+
+    "url": {
+      "@id": "schema:url",
+      "@type": "@id"
+    },
+
+    "tags": "schema:keywords",
+
+    "metadata": {
+      "@id": "schema:additionalProperty"
+    },
+
+    "creator": {
+      "@id": "schema:creator"
+    },
+
+    "date_created": {
+      "@id": "schema:dateCreated",
+      "@type": "xsd:dateTime"
+    },
+
+    "subject": {
+      "@id": "schema:about"
+    },
+
+    "license": {
+      "@id": "schema:license",
+      "@type": "@id"
+    },
+
+    "license_url": {
+      "@id": "schema:license",
+      "@type": "@id"
+    },
+
+    "holder": {
+      "@id": "schema:copyrightHolder"
+    },
+
+    "inventory_number": {
+      "@id": "schema:identifier"
+    },
+
+    "related_objects": {
+      "@container": "@set"
+    },
+
+    "relation": "schema:relatedLink",
+    "model": "schema:softwareVersion",
+    "generated_at": {
+      "@type": "xsd:dateTime"
+    },
+
+    "caption": {
+      "@container": "@language"
+    },
+
+    "detected_objects": "schema:recognisedProperty"
+  },
+
+  "@type": "CulturalObject",
+
+  "object_guid": "urn:uuid:123e4567-e89b-12d3-a456-426614174000",
+
+  "url": "https://example.org/object/123",
+
+  "tags": ["museum", "artifact"],
+
+  "title": {
+    "en": "Bronze Age Vessel",
+    "ru": "Сосуд бронзового века"
+  },
+
+  "description": {
+    "en": "A ceremonial vessel from the Bronze Age.",
+    "ru": "Церемониальный сосуд бронзового века."
+  },
+
+  "metadata": {
+    "core": {
+      "creator": "Unknown artisan",
+      "date_created": "1200-01-01T00:00:00Z",
+      "subject": ["Bronze Age", "ceramics"],
+      "source": "Archaeological excavation",
+      "coverage": "Eastern Europe",
+      "inventory_number": "INV-0001"
+    },
+    "rights": {
+      "status": "public domain",
+      "license": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "holder": "National Museum"
+    }
+  },
+
+  "related_objects": [
+    {
+      "relation": "similar_to",
+      "object_guid": "urn:uuid:987e6543-e21b-45d3-a456-426614174999"
+    }
+  ],
+
+  "ai": {
+    "model": "gpt-archive-v1",
+    "generated_at": "2026-05-25T10:00:00Z",
+    "caption": {
+      "en": "A decorated ancient vessel with geometric patterns.",
+      "ru": "Декорированный древний сосуд с геометрическим орнаментом."
+    },
+    "detected_objects": ["vessel", "ceramic", "pattern"]
+  }
+}
