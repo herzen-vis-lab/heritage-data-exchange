@@ -9,90 +9,52 @@ class HeritageDataExchange{
 }
 
 class Organization {
-    +string organization_guid
-    +string name
-    +string url
-}
-
-class RealObject {
-    +string external_id
-    +string authority
+    +UUID organization_guid
+    +MultilingualString title
     +string url
 }
 
 class DigitalObject {
-    +string digital_object_guid
+    +UUID digital_object_guid
     +string url
-    +string[] tags
+    +MultilingualString title
+    +MultilingualString description
+    +Metadata metadata
 }
 
 class Type {
     +string value
-    +string authority
+    +uri authority
 }
 
-class Title {
+class MultilingualString {
     +string language
     +string value
 }
 
-class Description {
-    +string language
-    +string value
+class Relation {
+    +NodeType source_type
+    +UUID source_guid
+    +NodeType target_type
+    +UUID target_guid
+    +RelationType relation
+    +uri authority
 }
 
-class Metadata {
-    +Core core
-    +Rights rights
+class NodeType {
+  <<enumeration>>
+  DigitalObject
 }
 
-class Core {
-    +string creator
-    +string date_created
-    +string[] subject
-    +string source
-    +string coverage
-    +string inventory_number
-}
-
-class Rights {
-    +string status
-    +string license
-    +string license_url
-    +string holder
-}
-
-class DigitalObjectRelation {
-    +string relation
-    +string authority
-    +string target_guid
-}
-
-class AI {
-    +string model
-    +datetime generated_at
-    +string[] detected_objects
-}
-
-class Caption {
-    +string language
-    +string value
+class RelationType {
+  <<enumeration>>
+  derived_from
 }
 
 %% Relationships
 
-HeritageDataExchange "1" --> "0..*" DigitalObject
-DigitalObject "1" --> "0..*" Organization
+HeritageDataExchange "1" --> "0..*" Organization 
+Organization "1" --> "0..*" DigitalObject
 DigitalObject "1" --> "0..*" Type
-DigitalObject "1" --> "1" Metadata
-Metadata "1" --> "1" Core
-Metadata "1" --> "1" Rights
-DigitalObject "1" --> "0..*" DigitalObjectRelation : source
-DigitalObject "1" --> "0..1" RealObject : represents
-DigitalObject "1" --> "0..1" AI
-AI "1" --> "0..*" Caption
-DigitalObject "1" --> "0..*"  Title
-DigitalObject "1" --> "0..*"  Description
-DigitalObjectRelation "1" --> "1" DigitalObject : target
-
+DigitalObject "1" --> "0..*"  Relation
 ```
