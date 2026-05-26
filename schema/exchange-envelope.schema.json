@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema",
+  "$id": "https://github.com/herzen-vis-lab/heritage-data-exchange/blob/main/schema/exchange-envelope.schema.json",
+  "title": "ExchangeEnvelope",
+  "description": "Конверт федеративного обмена. Обёртка над набором карточек объектов при передаче между узлами. Содержит метаданные протокола: версию, идентификаторы отправителя и получателя, временну́ю метку.",
+  "type": "object",
+  "required": [
+    "standard",
+    "version",
+    "generated_at",
+    "sender_guid",
+    "objects"
+  ],
+  "properties": {
+    "standard": {
+      "type": "string",
+      "description": "Идентификатор стандарта обмена",
+      "const": "heritage-data-exchange"
+    },
+    "version": {
+      "type": "string",
+      "description": "Версия протокола обмена",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "examples": [
+        "0.0.2"
+      ]
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Дата и время формирования конверта (ISO 8601 UTC)"
+    },
+    "sender_guid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID организации-отправителя. Должен совпадать с organization_guid зарегистрированного узла."
+    },
+    "receiver_guid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID организации-получателя. Опционально: не указывается при broadcast-рассылке подписчикам группы."
+    },
+    "exchange_type": {
+      "type": "string",
+      "enum": [
+        "publish",
+        "enrich_response",
+        "dedup_request",
+        "dedup_response"
+      ],
+      "description": "Тип обмена: publish — публикация новой карточки; enrich_response — ответ с обогащёнными атрибутами; dedup_request — запрос на проверку дубликатов; dedup_response — ответ с результатами дедупликации"
+    },
+    "objects": {
+      "type": "array",
+      "description": "Карточки объектов наследия. При publish — одна или несколько новых карточек; при enrich_response — обновлённые карточки с добавленными атрибутами.",
+      "minItems": 1,
+      "items": {
+        "$ref": "object-card.schema.json"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "examples": [
+    {
+      "standard": "heritage-data-exchange",
+      "version": "0.0.2",
+      "generated_at": "2025-06-01T12:00:00Z",
+      "sender_guid": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+      "receiver_guid": "550e8400-e29b-41d4-a716-446655440000",
+      "exchange_type": "publish",
+      "objects": [
+        {
+          "digital_object_guid": "550e8400-e29b-41d4-a716-446655440001",
+          "url": "https://heritage.herzen.spb.ru/objects/550e8400",
+          "title": [
+            {
+              "language": "ru",
+              "value": "Портрет Петра I"
+            },
+            {
+              "language": "en",
+              "value": "Portrait of Peter I"
+            }
+          ],
+          "types": [
+            {
+              "value": "painting",
+              "authority": "http://vocab.getty.edu/aat/300033618"
+            }
+          ],
+          "relations": [],
+          "metadata": {
+            "source_organization_guid": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+            "created_at": "2025-06-01T12:00:00Z",
+            "attribution_status": "attributed",
+            "schema_version": "0.0.2"
+          }
+        }
+      ]
+    }
+  ]
+}
