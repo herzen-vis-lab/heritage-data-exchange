@@ -1,4 +1,4 @@
-# ru-federated-cultural-ai-exchange.uml v.0.0.1
+# ru-federated-cultural-ai-exchange.uml v.0.0.2
 ```mermaid
 classDiagram
 
