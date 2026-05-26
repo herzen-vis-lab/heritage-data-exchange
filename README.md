@@ -39,7 +39,7 @@
 ## Что реализовано
 
 - [UML-модель протокола обмена v0.0.2](docs/ru-federated-cultural-ai-exchange.uml.md)
-- [JSON-схемы карточек](https://github.com/herzen-vis-lab/heritage-data-exchange/tree/main/schema)
+- [JSON-схемы протокола обмена](https://github.com/herzen-vis-lab/heritage-data-exchange/tree/main/schema)
 - JSON-примеры карточек объектов
 - Черновая OpenAPI-спецификация эндпоинтов обмена
 - Прототип API (выдача и приём карточек)
