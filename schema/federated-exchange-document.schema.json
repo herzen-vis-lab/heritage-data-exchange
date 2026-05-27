@@ -1,0 +1,291 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/refs/heads/main/schema/federated-exchange-document.schema.json",
+  "title": "FederatedExchangeDocument",
+  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network.",
+  "$ref": "#/$defs/FederatedExchangeDocument",
+  "$defs": {
+    "FederatedExchangeDocument": {
+      "title": "FederatedExchangeDocument",
+      "type": "object",
+      "properties": {
+        "federated_exchange_document_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "standard": {
+          "type": "string",
+          "format": "uri"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version (MAJOR.MINOR.PATCH)"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "federationnode": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederationNode"
+          }
+        }
+      },
+      "required": [
+        "federated_exchange_document_guid",
+        "standard",
+        "version",
+        "generated_at"
+      ],
+      "additionalProperties": false
+    },
+    "FederationNode": {
+      "title": "FederationNode",
+      "type": "object",
+      "properties": {
+        "federation_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "federation_node_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "digitalobject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DigitalObject"
+          }
+        },
+        "person": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Person"
+          }
+        },
+        "metadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Metadata"
+          }
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Classification"
+          }
+        },
+        "relation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Relation"
+          }
+        }
+      },
+      "required": [
+        "federation_node_guid",
+        "federation_node_url",
+        "created_at",
+        "modified_at"
+      ],
+      "additionalProperties": false
+    },
+    "DigitalObject": {
+      "title": "DigitalObject",
+      "type": "object",
+      "properties": {
+        "digital_object_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "digital_object_media_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "metadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Metadata"
+          }
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Classification"
+          }
+        }
+      },
+      "required": [
+        "digital_object_guid",
+        "digital_object_media_url",
+        "created_at",
+        "modified_at"
+      ],
+      "additionalProperties": false
+    },
+    "Classification": {
+      "title": "Classification",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "code",
+        "authority"
+      ],
+      "additionalProperties": false
+    },
+    "Metadata": {
+      "title": "Metadata",
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "JSON scalar: string, number, or boolean"
+        },
+        "language": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "language",
+        "authority"
+      ],
+      "additionalProperties": false
+    },
+    "Person": {
+      "title": "Person",
+      "type": "object",
+      "properties": {
+        "person_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string"
+        },
+        "metadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Metadata"
+          }
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Classification"
+          }
+        }
+      },
+      "required": [
+        "person_guid",
+        "full_name",
+        "language"
+      ],
+      "additionalProperties": false
+    },
+    "Relation": {
+      "title": "Relation",
+      "type": "object",
+      "properties": {
+        "source_type": {
+          "type": "string",
+          "description": "type: NodeType"
+        },
+        "source_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "target_type": {
+          "type": "string",
+          "description": "type: NodeType"
+        },
+        "target_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "relation": {
+          "type": "string"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "source_type",
+        "source_guid",
+        "target_type",
+        "target_guid",
+        "relation",
+        "authority"
+      ],
+      "additionalProperties": false
+    },
+    "NodeType": {
+      "title": "NodeType",
+      "enum": [
+        "FederationNode",
+        "DigitalObject",
+        "Person"
+      ]
+    }
+  }
+}
