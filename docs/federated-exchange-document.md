@@ -1,19 +1,26 @@
 # Federated Exchange Document v0.0.3
+## Общие правила валидации
+* поля с null или пустыми значениями должны быть исключены из документа
 * string - UTF-8 only
 * datetime - ISO8601 UTC timestamps
 * uri - absolute URI only
-* Поля с названием language - BCP47 lowercase normalization
-* omit null fields
-* All UUID - globally unique (UUID v4), immutable, lowercase
+* language - BCP47 lowercase normalization
+* all UUID - globally unique (UUID v4), immutable, lowercase
+## Правила валидации специфичные для класса
+### FederatedExchangeDocument
 * Each FederatedExchangeDocument represents an immutable export snapshot generated at generated_at.
 * FederatedExchangeDocument.version: semver (MAJOR.MINOR.PATCH)
 * FederatedExchangeDocument.standard = "https://github.com/herzen-vis-lab/heritage-data-exchange/blob/main/docs/federated-exchange-protocol.md"
+### Classification
 * Classification определяется на уровне FederationNode и переиспользуется DigitalObject и Person
-* Classification дедуплицируется через совпадение code + authority — не через Relation. authority должен быть глобально известным uri (например https://vocab.getty.edu/aat/). key должен соответствовать термину из словаря указанного в authority.
-* Metadata entries attached to the same parent entity. MUST be unique by (key, language, authority). Metadata.value MUST be a JSON scalar:
-- string
-- number
-- boolean
+* Classification дедуплицируется через совпадение code + authority — не через Relation. authority должен быть глобально известным uri (например https://vocab.getty.edu/aat/).
+### Metadata
+* Metadata.key должен соответствовать термину из словаря указанного в authority.
+* Metadata entries attached to the same parent entity. MUST be unique by (key, language, authority). Metadata.value MUST be a JSON scalar: string, number, boolean
+### Person
+* Person дедуплицируется через Relation.same_as, не через сравнение full_name
+### Relation
+* Relation.relation MUST match a term from the vocabulary identified by authority
 
 ```mermaid
 classDiagram
@@ -46,7 +53,7 @@ class Classification {
 
 class Metadata {
    +string key
-   +json value
+   +scalar value
    +string language
    +uri authority
 }
