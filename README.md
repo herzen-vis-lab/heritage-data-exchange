@@ -39,7 +39,7 @@
 ## Что реализовано
 
 - [UML-модель протокола обмена v0.0.3](https://github.com/herzen-vis-lab/heritage-data-exchange/docs/federated-exchange-document.md)
-- [JSON-схемы протокола обмена v0.0.2](https://github.com/herzen-vis-lab/heritage-data-exchange/tree/main/schema)
+- [JSON-схемы протокола обмена v0.0.3](https://github.com/herzen-vis-lab/heritage-data-exchange/tree/main/schema/federated-exchange-document.schema.json)
 - JSON-примеры карточек объектов
 - [OpenAPI-спецификация эндпоинтов обмена v0.0.2](https://github.com/herzen-vis-lab/heritage-data-exchange/tree/main/api)
 - Прототип API (выдача и приём карточек)
