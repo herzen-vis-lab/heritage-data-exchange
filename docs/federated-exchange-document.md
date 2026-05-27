@@ -1,20 +1,19 @@
 # Federated Exchange Document v0.0.3
-%%: UUID - globally unique (UUID v4), immutable
-
-%%: FederatedExchangeDocument.version: semver (MAJOR.MINOR.PATCH)
-
-%%: FederatedExchangeDocument.standard = "https://github.com/herzen-vis-lab/heritage-data-exchange/blob/main/docs/federated-exchange-protocol.md"
-
-%%: MetadataRoleType - каждая конкретная FederationNode может расширять данный справочник
-
-%%: Classification определяется на уровне FederationNode и переиспользуется DigitalObject и Person
-
-%%: Classification дедуплицируется через совпадение code + authority — не через Relation. 
-
-%%: authority должен быть глобально известным URI (например https://vocab.getty.edu/aat/).
-
-%%: key должен соответствовать термину из словаря указанного в authority.
-
+* string - UTF-8 only
+* datetime - ISO8601 UTC timestamps
+* uri - absolute URI only
+* Поля с названием language - BCP47 lowercase normalization
+* omit null fields
+* All UUID - globally unique (UUID v4), immutable, lowercase
+* Each FederatedExchangeDocument represents an immutable export snapshot generated at generated_at.
+* FederatedExchangeDocument.version: semver (MAJOR.MINOR.PATCH)
+* FederatedExchangeDocument.standard = "https://github.com/herzen-vis-lab/heritage-data-exchange/blob/main/docs/federated-exchange-protocol.md"
+* Classification определяется на уровне FederationNode и переиспользуется DigitalObject и Person
+* Classification дедуплицируется через совпадение code + authority — не через Relation. authority должен быть глобально известным uri (например https://vocab.getty.edu/aat/). key должен соответствовать термину из словаря указанного в authority.
+* Metadata entries attached to the same parent entity. MUST be unique by (key, language, authority). Metadata.value MUST be a JSON scalar:
+- string
+- number
+- boolean
 
 ```mermaid
 classDiagram
@@ -47,19 +46,15 @@ class Classification {
 
 class Metadata {
    +string key
-   +DataType datatype
-   +string value
+   +json value
    +string language
-   +MetadataRoleType role
    +uri authority
 }
 
 class Person {
    +UUID person_guid
-   +string person_language
-   +string family_name
-   +string given_name
-   +string middle_name
+   +string full_name
+   +string language
 }
 
 class Relation {
@@ -67,7 +62,7 @@ class Relation {
    +UUID source_guid
    +NodeType target_type
    +UUID target_guid
-   +RelationType relation
+   +string relation
    +uri authority
 }
 
@@ -76,30 +71,6 @@ class NodeType {
     FederationNode
     DigitalObject
     Person
-}
-
-class RelationType {
-   <<enumeration>>
-   derived_from
-   same_as
-   part_of
-   has_part
-   created_by
-   modified_by
-}
-
-class MetadataRoleType {
-   <<enumeration>>
-   name
-   title
-   description
-}
-
-class DataType {
-   <<enumeration>>
-   string
-   number
-   boolean
 }
 
 %% Relationships
