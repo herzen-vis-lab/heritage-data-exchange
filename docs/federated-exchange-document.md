@@ -1,31 +1,8 @@
 # Federated Exchange Document v0.0.3
-## Общие правила валидации
-* поля с null или пустыми значениями должны быть исключены из документа
-* string - UTF-8 only
-* datetime - ISO8601 UTC timestamps
-* uri - absolute URI only
-* language - BCP47 lowercase normalization
-* all UUID - globally unique (UUID v4), immutable, lowercase
-## Правила валидации специфичные для класса
-### FederatedExchangeDocument
-* Each FederatedExchangeDocument represents an immutable export snapshot generated at generated_at.
-* FederatedExchangeDocument.version: semver (MAJOR.MINOR.PATCH)
-* FederatedExchangeDocument.standard = "https://github.com/herzen-vis-lab/heritage-data-exchange/blob/main/docs/federated-exchange-protocol.md"
-### Classification
-* Classification определяется на уровне FederationNode и переиспользуется DigitalObject и Person
-* Classification дедуплицируется через совпадение code + authority — не через Relation. authority должен быть глобально известным uri (например https://vocab.getty.edu/aat/).
-### Metadata
-* Metadata.key должен соответствовать термину из словаря указанного в authority.
-* Metadata entries attached to the same parent entity. MUST be unique by (key, language, authority). Metadata.value MUST be a JSON scalar: string, number, boolean
-### Person
-* Person дедуплицируется через Relation.same_as, не через сравнение full_name
-### Relation
-* Relation.relation MUST match a term from the vocabulary identified by authority
-
 ```mermaid
 classDiagram
 
-class FederatedExchangeDocument{
+class FederatedExchangeDocument {
    +UUID federated_exchange_document_guid
    +uri standard
    +semver version
@@ -54,17 +31,18 @@ class Classification {
 class Metadata {
    +string key
    +scalar value
-   +string language
+   +language language
    +uri authority
 }
 
 class Person {
    +UUID person_guid
    +string full_name
-   +string language
+   +language language
 }
 
 class Relation {
+   +UUID relation_guid
    +NodeType source_type
    +UUID source_guid
    +NodeType target_type
@@ -74,22 +52,23 @@ class Relation {
 }
 
 class NodeType {
-    <<enumeration>>
-    FederationNode
-    DigitalObject
-    Person
+   <<enumeration>>
+   FederationNode
+   DigitalObject
+   Person
 }
 
-%% Relationships
+FederatedExchangeDocument "1" --> "0..*" FederationNode : federation_nodes
 
-FederatedExchangeDocument "1" --> "0..*" FederationNode 
-FederationNode "1" --> "0..*" DigitalObject
-FederationNode "1" --> "0..*" Person : person
+FederationNode "1" --> "0..*" DigitalObject : digital_objects
+FederationNode "1" --> "0..*" Person : persons
 FederationNode "1" --> "0..*" Metadata : metadata
-FederationNode "1" --> "0..*" Classification : classification
-FederationNode "1" --> "0..*"  Relation : relation
-DigitalObject "1" --> "0..*"  Metadata : metadata
-DigitalObject "1" --> "0..*" Classification : classification
-Person "1" --> "0..*"  Metadata : metadata
-Person "1" --> "0..*" Classification : classification
+FederationNode "1" --> "0..*" Classification : classifications
+FederationNode "1" --> "0..*" Relation : relations
+
+DigitalObject "1" --> "0..*" Metadata : metadata
+DigitalObject "1" --> "0..*" Classification : classifications
+
+Person "1" --> "0..*" Metadata : metadata
+Person "1" --> "0..*" Classification : classifications
 ```
