@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this protocol or reference it in academic work, please cite it as below."
+type: software
+title: "Heritage Data Exchange: Federated Protocol for Digital Cultural Heritage"
+abstract: >
+  Prototype of a federated exchange protocol for digital cultural heritage objects
+  between universities, museums, libraries and other organizations in a loosely
+  coupled network. Implements federated MDM patterns: node identification without
+  a central operator, record linkage between independent repositories, and
+  authority-based NSI reconciliation in a federated topology.
+version: "0.0.3"
+date-released: "2026-06-01"
+license: MIT
+repository-code: "https://github.com/herzen-vis-lab/heritage-data-exchange"
+url: "https://360-viewer-herzen.vercel.app"
+
+authors:
+  - family-names: Shmarev
+    given-names: Artem
+    alias: ashmarev
+    affiliation: >
+      Data Governance & MDM Competency Center, Unicon BSL / BDO Global Alliance;
+      Research Engineer, Herzen State Pedagogical University of Russia
+    orcid: ""
+    website: "https://www.linkedin.com/in/ashmarev"
+
+  - family-names: Shubina
+    given-names: Anastasia
+    affiliation: "Herzen State Pedagogical University of Russia"
+
+keywords:
+  - federated-mdm
+  - cultural-heritage
+  - data-exchange
+  - record-linkage
+  - nsi
+  - data-governance
+  - loosely-coupled-network
+  - json-schema
+  - openapi
+  - digital-humanities
