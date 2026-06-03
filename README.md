@@ -75,11 +75,11 @@
 Data Governance & AI Architect · Lab Coordinator · Unicon BSL / Herzen University
 [LinkedIn](https://www.linkedin.com/in/ashmarev) · [GitHub](https://github.com/ashmarev)
  
-**Анастасия Шубина** — ассистент кафедры, РГПУ им. А. И. Герцена
+[**Анастасия Шубина**](https://github.com/eufemisme) — ассистент кафедры, РГПУ им. А. И. Герцена
  
-**Евгений Мишагин** — фронтенд-разработчик
+[**Евгений Мишагин**](https://github.com/EvgGitHub198) — фронтенд-разработчик
  
-**Иван Макаров** — создание объектов цифрового культурного наследия
+[**Иван Макаров**](https://github.com/Vanish2026) — создание объектов цифрового культурного наследия
  
 ---
  
