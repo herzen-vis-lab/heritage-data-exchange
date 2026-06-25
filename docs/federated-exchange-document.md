@@ -1,4 +1,4 @@
-# Federated Exchange Document v0.0.3
+# Federated Exchange Document v0.0.4
 ```mermaid
 classDiagram
 
@@ -19,6 +19,8 @@ class FederationNode {
 class DigitalObject {
    +UUID digital_object_guid
    +uri digital_object_media_url
+   +string local_identifier
+   +uri record_url
    +datetime created_at
    +datetime modified_at
 }
@@ -26,6 +28,9 @@ class DigitalObject {
 class Classification {
    +string code
    +uri authority
+   +UUID source_node_guid
+   +datetime created_at
+   +datetime modified_at
 }
 
 class Metadata {
@@ -33,6 +38,9 @@ class Metadata {
    +scalar value
    +language language
    +uri authority
+   +UUID source_node_guid
+   +datetime created_at
+   +datetime modified_at
 }
 
 class Person {
@@ -49,6 +57,9 @@ class Relation {
    +UUID target_guid
    +string relation
    +uri authority
+   +StatusType status
+   +UUID asserted_by_node_guid
+   +datetime created_at
 }
 
 class NodeType {
@@ -56,6 +67,13 @@ class NodeType {
    FederationNode
    DigitalObject
    Person
+}
+
+class StatusType {
+   <<enumeration>>
+   candidate_match
+   confirmed_match
+   rejected_match
 }
 
 FederatedExchangeDocument "1" --> "0..*" FederationNode : federation_nodes
