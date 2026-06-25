@@ -3,7 +3,7 @@
 > **Prototype of a federated exchange protocol for digital cultural heritage objects between universities, museums, and libraries in a loosely coupled network.**
  
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Protocol Version](https://img.shields.io/badge/protocol-v0.0.3-green.svg)](docs/federated-exchange-document.md)
+[![Protocol Version](https://img.shields.io/badge/protocol-v0.0.4-green.svg)](docs/federated-exchange-document.md)
  
 ---
  
@@ -46,7 +46,7 @@
  
 ## Что реализовано
  
-- [UML-модель протокола обмена v0.0.3](docs/federated-exchange-document.md)
+- [UML-модель протокола обмена v0.0.4](docs/federated-exchange-document.md)
 - [Каталог экспозиций РГПУ им.А.И. Герцена](https://collections.herzen.spb.ru/) как пример сервиса для создания и распространения объектов цифрового культурного наследия
 
 ---
