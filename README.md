@@ -46,10 +46,10 @@
  
 ## Что реализовано
  
-- [UML-модель протокола обмена v0.0.4](docs/federated-exchange-document.md) + транспортный конверт (`publish`, `dedup_request`, `dedup_response`, `enrich_response`)
+- [UML-модель протокола обмена v0.0.4](docs/federated-exchange-document.md) + асинхронный транспортный конверт: один тип `publish` с двумя режимами (broadcast — полный снимок; таргетированный — возврат вклада получателя)
 - [JSON Schema модели данных](schema/federated-exchange-document.schema.json) и [JSON Schema конверта обмена](schema/exchange-envelope.schema.json)
 - [Правила протокола](docs/federated-exchange-document.rules.dsl): провенанс атрибутов, жизненный цикл дедупликации, согласование НСИ
-- [Пример обмена между организациями А и Б](examples/README.md) (сценарий из статьи)
+- [Примеры обмена между организациями А и Б](examples/README.md): broadcast-публикация полного снимка и таргетированный возврат вклада (сценарий из статьи)
 - [Каталог экспозиций РГПУ им.А.И. Герцена](https://collections.herzen.spb.ru/) как пример сервиса для создания и распространения объектов цифрового культурного наследия
 
 ---

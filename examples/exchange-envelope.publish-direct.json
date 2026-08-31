@@ -1,0 +1,86 @@
+{
+  "standard": "heritage-data-exchange",
+  "version": "0.0.4",
+  "generated_at": "2026-06-10T12:45:00Z",
+  "sender_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+  "receiver_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+  "objects": [
+    {
+      "digital_object_guid": "1f2e3d4c-5b6a-4c7d-9e8f-0a1b2c3d4e5f",
+      "digital_object_media_url": "https://storage.yandexcloud.net/techopark-bucket-exposition/bonec/",
+      "local_identifier": "bonec",
+      "record_url": "https://collections.herzen.spb.ru/catalog/bonec",
+      "created_at": "2026-06-08T09:15:00Z",
+      "modified_at": "2026-06-10T12:25:00Z",
+      "metadata": [
+        {
+          "key": "material",
+          "value": "Пластик, металл",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#material",
+          "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+          "asserted_by_person_guid": "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e",
+          "attribution_status": "expert_verified",
+          "created_at": "2026-06-10T12:20:00Z",
+          "modified_at": "2026-06-10T12:25:00Z"
+        },
+        {
+          "key": "purpose",
+          "value": "Учебная модель для изучения анатомии и биомеханики верхней конечности",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#purpose",
+          "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+          "asserted_by_person_guid": "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e",
+          "attribution_status": "expert_verified",
+          "created_at": "2026-06-10T12:21:00Z",
+          "modified_at": "2026-06-10T12:25:00Z"
+        },
+        {
+          "key": "collection",
+          "value": "Анатомические модели",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#collection",
+          "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+          "asserted_by_person_guid": "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e",
+          "attribution_status": "authoritative",
+          "created_at": "2026-06-10T12:22:00Z",
+          "modified_at": "2026-06-10T12:25:00Z"
+        }
+      ]
+    }
+  ],
+  "persons": [
+    {
+      "person_guid": "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e",
+      "full_name": "Смирнов Пётр Иванович",
+      "language": "ru",
+      "metadata": [
+        {
+          "key": "role",
+          "value": "эксперт-атрибутор (условное лицо узла Б для иллюстрации обогащения)",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#role",
+          "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+          "asserted_by_person_guid": "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e",
+          "attribution_status": "authoritative",
+          "created_at": "2026-06-10T12:10:00Z",
+          "modified_at": "2026-06-10T12:10:00Z"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "relation_guid": "3c4d5e6f-7a8b-4c9d-ae0f-1b2c3d4e5f6a",
+      "source_type": "DigitalObject",
+      "source_guid": "1f2e3d4c-5b6a-4c7d-9e8f-0a1b2c3d4e5f",
+      "target_type": "DigitalObject",
+      "target_guid": "2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d",
+      "relation": "same_as",
+      "authority": "https://heritage.example.org/ns/relations/v1#same_as",
+      "status": "confirmed_match",
+      "asserted_by_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+      "created_at": "2026-06-10T12:15:00Z"
+    }
+  ]
+}

@@ -57,7 +57,7 @@ rule object.guid_immutable {
 
 rule object.local_identifier {
   description: "Локальный идентификатор (например, АК1) обязателен при publish и уникален в пределах узла-источника"
-  require: local_identifier if exchange_type == publish
+  require: local_identifier for each published object
   uniqueness: (federation_node_guid, local_identifier)
   on_violation: reject_envelope
 }
@@ -114,36 +114,49 @@ rule classification.authority {
 # ─────────────────────────────────────────────────────────────────────────
 # 5. Жизненный цикл дедупликации
 # ─────────────────────────────────────────────────────────────────────────
+# Дедупликация — локальная операция узла: при получении конверта узел
+# проверяет карточки на дубликаты в своей БД. Результат распространяется
+# теми же конвертами publish в виде связей Relation.
+
+rule dedup.local_check {
+  description: "Узел проверяет полученные карточки на дубликаты локально, в своей БД"
+  trigger: publish received
+  action: compare(classification.group, attributes) in local_database
+}
 
 rule dedup.candidate {
-  description: "Первое сопоставление двух карточек создаёт связь со статусом candidate_match"
-  trigger: dedup_request
-  action: create Relation(status = candidate_match, asserted_by_node_guid = sender_node_guid)
+  description: "Обнаруженный дубликат публикуется связью со статусом candidate_match"
+  action: publish Relation(status = candidate_match, asserted_by_node_guid = self)
 }
 
 rule dedup.confirm {
-  description: "candidate_match переводится в confirmed_match только при согласии обеих сторон (обе карточки участвуют) или по решению авторитетного узла"
+  description: "candidate_match переводится в confirmed_match при согласии обеих сторон (обе карточки участвуют) или по решению авторитетного узла; результат публикуется конвертом publish"
   condition: confirmed_by(source_node) AND confirmed_by(target_node)
   alt_condition: authority_decision(relation.authority)
-  action: set Relation(status = confirmed_match)
+  action: publish Relation(status = confirmed_match)
 }
 
 rule dedup.reject {
-  description: "Любая из сторон может отклонить связь; rejected_match фиксируется с указанием инициатора и не пересматривается без новых данных"
-  trigger: dedup_response(reason != null)
-  action: set Relation(status = rejected_match)
+  description: "Любая из сторон может отклонить связь; rejected_match публикуется с указанием инициатора и не пересматривается без новых данных"
+  trigger: disagreement(reason != null)
+  action: publish Relation(status = rejected_match)
 }
 
 rule dedup.enrichment {
   description: "После confirmed_match атрибуты обеих карточек взаимно обогащаются; каждая сторона сохраняет провенанс своих атрибутов"
-  action: merge_attributes(ak1, bk1) with provenance
-  result: enrich_response от каждого узла-участника
+  action: merge_attributes(card_a, card_b) with provenance
+  result: publish broadcast с полным снимком (атрибуты обеих сторон)
 }
 
-rule dedup.propagation {
-  description: "Изменения карточки распространяются конвертом enrich_response всем узлам, ссылающимся на объект"
-  target: referenced_by(relation) ∪ subscribers(classification.group)
+rule merge.provenance {
+  description: "Получатель выполняет merge по провенансу: атрибуты с разными source_node_guid не затирают друг друга; снимок отправителя не гарантирует глобальную полноту (асинхронность)"
+  action: keep_by_source_node_guid
   on_violation: warn
+}
+
+rule dedup.return_contribution {
+  description: "Подтверждённый вклад возвращается узлу-вкладчику таргетированным конвертом: receiver_node_guid = вкладчик, карточка содержит только атрибуты source_node_guid == receiver_node_guid и связи с его участием"
+  action: publish targeted(receiver = contributor)
 }
 
 # ─────────────────────────────────────────────────────────────────────────
@@ -157,14 +170,14 @@ rule envelope.sender {
 }
 
 rule envelope.broadcast {
-  description: "receiver_node_guid опускается при broadcast-рассылке подписчикам группы классификатора"
-  condition: receiver_node_guid == null implies publish_to_group(classification.group)
+  description: "receiver_node_guid отсутствует — broadcast: полный снимок (все атрибуты со всеми source_node_guid, известные отправителю) подписчикам группы классификатора"
+  condition: receiver_node_guid == null implies publish_to_group(classification.group) with full_snapshot
   on_violation: warn
 }
 
-rule envelope.types {
-  description: "Семантика конвертов: publish — новые карточки; dedup_request — запрос проверки дубликатов; dedup_response — результаты проверки; enrich_response — обогащённые карточки и связи"
-  constraint: exchange_type in [publish, dedup_request, dedup_response, enrich_response]
+rule envelope.direct {
+  description: "receiver_node_guid заполнен — таргетированная доставка (возврат вклада): только атрибуты с source_node_guid == receiver_node_guid, связи с участием получателя и минимальный контекст объекта"
+  constraint: receiver_node_guid != null implies attributes ⊆ {source_node_guid == receiver_node_guid}
   on_violation: reject_envelope
 }
 

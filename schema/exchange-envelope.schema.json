@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/exchange-envelope.schema.json",
   "title": "ExchangeEnvelope",
-  "description": "Transport envelope of the federated exchange. Wraps a set of digital object cards transferred between nodes. Carries protocol metadata: version, sender/receiver node identifiers, exchange type, timestamp.",
+  "description": "Asynchronous transport envelope of the federated exchange. The only exchange type is publish: a node publishes the state of an object. The mode is determined by receiver_node_guid: absent — broadcast to group subscribers (full snapshot known to the sender); present — targeted delivery of the receiver's own contribution back to it (attributes with source_node_guid == receiver_node_guid, relations involving the receiver, and minimal object context).",
   "type": "object",
   "properties": {
     "standard": {
@@ -28,21 +28,11 @@
     "receiver_node_guid": {
       "type": "string",
       "format": "uuid",
-      "description": "UUID of the receiving node. Optional: omitted for broadcast to group subscribers"
-    },
-    "exchange_type": {
-      "type": "string",
-      "enum": [
-        "publish",
-        "dedup_request",
-        "dedup_response",
-        "enrich_response"
-      ],
-      "description": "publish — new object card(s); dedup_request — request for duplicate check; dedup_response — result of duplicate check; enrich_response — cards enriched with attributes and confirmed/rejected linkages"
+      "description": "Mode switch. Absent/empty — broadcast: full snapshot of the object (all attributes with all source_node_guid known to the sender) to subscribers of the classification group. Present — targeted delivery: the card carries only the receiver's own contribution (attributes with source_node_guid == receiver_node_guid), relations involving the receiver, and minimal object context (guid, media, local_identifier, record_url)"
     },
     "objects": {
       "type": "array",
-      "description": "Digital object cards. For publish — new cards; for dedup_response — cards with candidate linkages; for enrich_response — enriched cards returned to the source node",
+      "description": "Digital object cards. Broadcast — full snapshot known to the sender; targeted — the receiver's own contribution plus minimal object context",
       "items": {
         "$ref": "federated-exchange-document.schema.json#/$defs/DigitalObject"
       }
@@ -56,7 +46,7 @@
     },
     "relations": {
       "type": "array",
-      "description": "Record linkage relations carried by the envelope (e.g. same_as between AK1 and BK1 with linkage status)",
+      "description": "Record linkage relations carried by the envelope (e.g. same_as between cards with linkage status candidate_match / confirmed_match / rejected_match)",
       "items": {
         "$ref": "federated-exchange-document.schema.json#/$defs/Relation"
       }
@@ -67,7 +57,6 @@
     "version",
     "generated_at",
     "sender_node_guid",
-    "exchange_type",
     "objects"
   ],
   "additionalProperties": false
