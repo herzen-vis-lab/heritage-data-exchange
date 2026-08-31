@@ -1,0 +1,371 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/federated-exchange-document.schema.json",
+  "title": "FederatedExchangeDocument",
+  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.4.",
+  "$ref": "#/$defs/FederatedExchangeDocument",
+  "$defs": {
+    "FederatedExchangeDocument": {
+      "title": "FederatedExchangeDocument",
+      "type": "object",
+      "properties": {
+        "federated_exchange_document_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "standard": {
+          "type": "string",
+          "format": "uri",
+          "description": "Identifier of the exchange standard (protocol namespace)"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^\\d+\\.\\d+\\.\\d+$",
+          "description": "Semantic version (MAJOR.MINOR.PATCH) of the exchange document"
+        },
+        "generated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "federationnode": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/FederationNode"
+          },
+          "description": "Nodes (organizations) participating in the federation snapshot"
+        }
+      },
+      "required": [
+        "federated_exchange_document_guid",
+        "standard",
+        "version",
+        "generated_at"
+      ],
+      "additionalProperties": false
+    },
+    "FederationNode": {
+      "title": "FederationNode",
+      "type": "object",
+      "properties": {
+        "federation_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase. Identifies the organization-node without a central operator"
+        },
+        "federation_node_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Base URL of the node service (exchange endpoint)"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "digitalobject": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DigitalObject"
+          }
+        },
+        "person": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Person"
+          }
+        },
+        "metadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Metadata"
+          }
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Classification"
+          }
+        },
+        "relation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Relation"
+          }
+        }
+      },
+      "required": [
+        "federation_node_guid",
+        "federation_node_url",
+        "created_at",
+        "modified_at"
+      ],
+      "additionalProperties": false
+    },
+    "DigitalObject": {
+      "title": "DigitalObject",
+      "type": "object",
+      "properties": {
+        "digital_object_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase. Assigned by the source organization"
+        },
+        "digital_object_media_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "URL of the digital representation (media) of the object"
+        },
+        "local_identifier": {
+          "type": "string",
+          "description": "Local identifier of the object in the source organization, e.g. AK1"
+        },
+        "record_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Canonical URL of the object record in the source organization's service"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "metadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Metadata"
+          }
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Classification"
+          }
+        }
+      },
+      "required": [
+        "digital_object_guid",
+        "digital_object_media_url",
+        "created_at",
+        "modified_at"
+      ],
+      "additionalProperties": false
+    },
+    "Classification": {
+      "title": "Classification",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Classifier code, e.g. group identifier of the universal classifier"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI of the authoritative vocabulary (AAT, ULAN, LCSH, VIAF or a federation-registered classifier)"
+        },
+        "source_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the node that asserted this classification (provenance)"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        }
+      },
+      "required": [
+        "code",
+        "authority"
+      ],
+      "additionalProperties": false
+    },
+    "Metadata": {
+      "title": "Metadata",
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Metadata attribute key, e.g. title, description, material"
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "JSON scalar: string, number, or boolean"
+        },
+        "language": {
+          "type": "string",
+          "description": "BCP 47 language tag, e.g. ru, en"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI of the authoritative source defining the semantics of the attribute"
+        },
+        "source_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the node that asserted this attribute (provenance; enables conflict resolution during enrichment)"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "language",
+        "authority"
+      ],
+      "additionalProperties": false
+    },
+    "Person": {
+      "title": "Person",
+      "type": "object",
+      "properties": {
+        "person_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "full_name": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "description": "BCP 47 language tag of the name"
+        },
+        "metadata": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Metadata"
+          }
+        },
+        "classification": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Classification"
+          }
+        }
+      },
+      "required": [
+        "person_guid",
+        "full_name",
+        "language"
+      ],
+      "additionalProperties": false
+    },
+    "Relation": {
+      "title": "Relation",
+      "type": "object",
+      "properties": {
+        "relation_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "source_type": {
+          "$ref": "#/$defs/NodeType"
+        },
+        "source_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the source node (FederationNode, DigitalObject or Person)"
+        },
+        "target_type": {
+          "$ref": "#/$defs/NodeType"
+        },
+        "target_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the target node (FederationNode, DigitalObject or Person)"
+        },
+        "relation": {
+          "type": "string",
+          "description": "Relation type, e.g. same_as, duplicate_of"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI of the authoritative source defining the semantics of the relation type"
+        },
+        "status": {
+          "$ref": "#/$defs/StatusType",
+          "description": "Record linkage status: candidate_match, confirmed_match or rejected_match"
+        },
+        "asserted_by_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the node that asserted the relation (provenance)"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        }
+      },
+      "required": [
+        "relation_guid",
+        "source_type",
+        "source_guid",
+        "target_type",
+        "target_guid",
+        "relation",
+        "authority",
+        "status",
+        "asserted_by_node_guid",
+        "created_at"
+      ],
+      "additionalProperties": false
+    },
+    "NodeType": {
+      "title": "NodeType",
+      "enum": [
+        "FederationNode",
+        "DigitalObject",
+        "Person"
+      ]
+    },
+    "StatusType": {
+      "title": "StatusType",
+      "enum": [
+        "candidate_match",
+        "confirmed_match",
+        "rejected_match"
+      ]
+    }
+  }
+}

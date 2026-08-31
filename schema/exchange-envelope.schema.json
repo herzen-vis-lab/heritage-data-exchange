@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/exchange-envelope.schema.json",
+  "title": "ExchangeEnvelope",
+  "description": "Transport envelope of the federated exchange. Wraps a set of digital object cards transferred between nodes. Carries protocol metadata: version, sender/receiver node identifiers, exchange type, timestamp.",
+  "type": "object",
+  "properties": {
+    "standard": {
+      "type": "string",
+      "const": "heritage-data-exchange",
+      "description": "Identifier of the exchange standard"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semantic version (MAJOR.MINOR.PATCH) of the protocol"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp of envelope generation"
+    },
+    "sender_node_guid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the sending node. Must match the federation_node_guid of the registered sender"
+    },
+    "receiver_node_guid": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the receiving node. Optional: omitted for broadcast to group subscribers"
+    },
+    "exchange_type": {
+      "type": "string",
+      "enum": [
+        "publish",
+        "dedup_request",
+        "dedup_response",
+        "enrich_response"
+      ],
+      "description": "publish — new object card(s); dedup_request — request for duplicate check; dedup_response — result of duplicate check; enrich_response — cards enriched with attributes and confirmed/rejected linkages"
+    },
+    "objects": {
+      "type": "array",
+      "description": "Digital object cards. For publish — new cards; for dedup_response — cards with candidate linkages; for enrich_response — enriched cards returned to the source node",
+      "items": {
+        "$ref": "federated-exchange-document.schema.json#/$defs/DigitalObject"
+      }
+    },
+    "relations": {
+      "type": "array",
+      "description": "Record linkage relations carried by the envelope (e.g. same_as between AK1 and BK1 with linkage status)",
+      "items": {
+        "$ref": "federated-exchange-document.schema.json#/$defs/Relation"
+      }
+    }
+  },
+  "required": [
+    "standard",
+    "version",
+    "generated_at",
+    "sender_node_guid",
+    "exchange_type",
+    "objects"
+  ],
+  "additionalProperties": false
+}

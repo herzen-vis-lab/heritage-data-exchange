@@ -46,7 +46,10 @@
  
 ## Что реализовано
  
-- [UML-модель протокола обмена v0.0.4](docs/federated-exchange-document.md)
+- [UML-модель протокола обмена v0.0.4](docs/federated-exchange-document.md) + транспортный конверт (`publish`, `dedup_request`, `dedup_response`, `enrich_response`)
+- [JSON Schema модели данных](schema/federated-exchange-document.schema.json) и [JSON Schema конверта обмена](schema/exchange-envelope.schema.json)
+- [Правила протокола](docs/federated-exchange-document.rules.dsl): провенанс атрибутов, жизненный цикл дедупликации, согласование НСИ
+- [Пример обмена между организациями А и Б](examples/README.md) (сценарий из статьи)
 - [Каталог экспозиций РГПУ им.А.И. Герцена](https://collections.herzen.spb.ru/) как пример сервиса для создания и распространения объектов цифрового культурного наследия
 
 ---
@@ -54,7 +57,9 @@
 ## Структура репозитория
  
 ```
-/docs    — UML-модель и описание протокола обмена
+/docs      — UML-модель, описание протокола и правила (rules.dsl)
+/schema    — JSON Schema модели данных и конверта обмена
+/examples  — пример обмена между организациями А и Б
 ```
  
 ---

@@ -1,4 +1,15 @@
 # Federated Exchange Document v0.0.4
+
+Модель данных и правила протокола федеративного обмена объектами цифрового
+культурного наследия в слабосвязанной сети независимых организаций.
+
+Машиночитаемые артефакты:
+
+- [JSON Schema модели данных](../schema/federated-exchange-document.schema.json)
+- [JSON Schema конверта обмена](../schema/exchange-envelope.schema.json)
+- [Правила протокола](federated-exchange-document.rules.dsl)
+- [Пример обмена А/Б](../examples/README.md)
+
 ```mermaid
 classDiagram
 
@@ -90,3 +101,24 @@ DigitalObject "1" --> "0..*" Classification : classifications
 Person "1" --> "0..*" Metadata : metadata
 Person "1" --> "0..*" Classification : classifications
 ```
+
+## Транспортный конверт (Exchange Envelope)
+
+Модель данных выше описывает состояние федерации (снимок). Обмен между узлами
+выполняется конвертами `ExchangeEnvelope` — обёрткой над набором карточек
+объектов (`objects`) и связей (`relations`). Конверт несёт метаданные
+протокола: версию, идентификаторы узлов-отправителя и получателя, тип обмена.
+
+`exchange_type` определяет семантику обмена:
+
+| Тип | Направление | Содержимое |
+|---|---|---|
+| `publish` | А → Б (подписчики группы) | Новые карточки объектов |
+| `dedup_request` | Б → А | Запрос проверки карточки на дубликаты |
+| `dedup_response` | Б → А | Результат проверки: связи `candidate_match` / `rejected_match` |
+| `enrich_response` | Б → А | Обогащённые карточки и связи `confirmed_match` |
+
+Сценарий обмена между организациями А и Б (оцифровка → публикация →
+проверка дубликатов → взаимное обогащение → возврат) описан в
+[примере](../examples/README.md), правила — в
+[`federated-exchange-document.rules.dsl`](federated-exchange-document.rules.dsl).

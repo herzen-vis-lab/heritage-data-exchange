@@ -1,0 +1,97 @@
+{
+  "standard": "heritage-data-exchange",
+  "version": "0.0.4",
+  "generated_at": "2026-06-10T12:30:00Z",
+  "sender_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+  "receiver_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+  "exchange_type": "enrich_response",
+  "objects": [
+    {
+      "digital_object_guid": "1f2e3d4c-5b6a-4c7d-9e8f-0a1b2c3d4e5f",
+      "digital_object_media_url": "https://heritage-a.example.org/media/ak1/electrophorus-360.png",
+      "local_identifier": "АК1",
+      "record_url": "https://heritage-a.example.org/objects/ak1",
+      "created_at": "2026-06-08T09:15:00Z",
+      "modified_at": "2026-06-10T12:25:00Z",
+      "metadata": [
+        {
+          "key": "title",
+          "value": "Электрофорная машина",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#title",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "created_at": "2026-06-08T09:15:00Z",
+          "modified_at": "2026-06-08T09:15:00Z"
+        },
+        {
+          "key": "title",
+          "value": "Electrophorus machine",
+          "language": "en",
+          "authority": "https://heritage.example.org/ns/metadata/v1#title",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "created_at": "2026-06-08T09:16:00Z",
+          "modified_at": "2026-06-08T09:16:00Z"
+        },
+        {
+          "key": "description",
+          "value": "Физический прибор XIX века для получения электрических зарядов. Оцифрован методом фотограмметрии (120 снимков).",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#description",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "created_at": "2026-06-08T09:17:00Z",
+          "modified_at": "2026-06-08T09:17:00Z"
+        },
+        {
+          "key": "historical_context",
+          "value": "Использовалась в физическом кабинете педагогического училища во второй половине XIX века; упоминается в инвентарной книге 1874 года.",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#historical_context",
+          "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+          "created_at": "2026-06-10T12:20:00Z",
+          "modified_at": "2026-06-10T12:20:00Z"
+        },
+        {
+          "key": "material",
+          "value": "Стекло, латунь, дерево",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#material",
+          "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+          "created_at": "2026-06-10T12:21:00Z",
+          "modified_at": "2026-06-10T12:21:00Z"
+        },
+        {
+          "key": "inventory_number",
+          "value": "ФК-1874-0112",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#inventory_number",
+          "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+          "created_at": "2026-06-10T12:22:00Z",
+          "modified_at": "2026-06-10T12:22:00Z"
+        }
+      ],
+      "classification": [
+        {
+          "code": "Группа 1",
+          "authority": "https://heritage.example.org/ns/classifier/v1",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "created_at": "2026-06-08T09:18:00Z",
+          "modified_at": "2026-06-08T09:18:00Z"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "relation_guid": "3c4d5e6f-7a8b-4c9d-ae0f-1b2c3d4e5f6a",
+      "source_type": "DigitalObject",
+      "source_guid": "1f2e3d4c-5b6a-4c7d-9e8f-0a1b2c3d4e5f",
+      "target_type": "DigitalObject",
+      "target_guid": "2a3b4c5d-6e7f-4a8b-9c0d-1e2f3a4b5c6d",
+      "relation": "same_as",
+      "authority": "https://heritage.example.org/ns/relations/v1#same_as",
+      "status": "confirmed_match",
+      "asserted_by_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+      "created_at": "2026-06-10T12:15:00Z"
+    }
+  ]
+}
