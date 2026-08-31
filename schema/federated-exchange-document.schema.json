@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/federated-exchange-document.schema.json",
   "title": "FederatedExchangeDocument",
-  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.4.",
+  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.5.",
   "$ref": "#/$defs/FederatedExchangeDocument",
   "$defs": {
     "FederatedExchangeDocument": {

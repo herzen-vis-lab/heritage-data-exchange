@@ -1,4 +1,4 @@
-# Heritage Data Exchange — правила протокола v0.0.4 (черновик)
+# Heritage Data Exchange — правила протокола v0.0.5 (черновик)
 #
 # Правила задают поведение узлов федеративной сети: валидацию документов,
 # провенанс атрибутов, жизненный цикл дедупликации, семантику конвертов,
@@ -154,6 +154,11 @@ rule merge.provenance {
   on_violation: warn
 }
 
+rule merge.master_record {
+  description: "Мастер-запись не выделяется: у каждого узла собственная карточка объекта; карточки связываются (same_as) и взаимно обогащаются по провенансу"
+  action: linked_cards_with_provenance
+}
+
 rule dedup.return_contribution {
   description: "Подтверждённый вклад возвращается узлу-вкладчику таргетированным конвертом: receiver_node_guid = вкладчик, карточка содержит только атрибуты source_node_guid == receiver_node_guid и связи с его участием"
   action: publish targeted(receiver = contributor)
@@ -179,6 +184,11 @@ rule envelope.direct {
   description: "receiver_node_guid заполнен — таргетированная доставка (возврат вклада): только атрибуты с source_node_guid == receiver_node_guid, связи с участием получателя и минимальный контекст объекта"
   constraint: receiver_node_guid != null implies attributes ⊆ {source_node_guid == receiver_node_guid}
   on_violation: reject_envelope
+}
+
+rule envelope.transport {
+  description: "Транспортный слой и механизм подписки на группы — предмет реализации и отдельной публикации; целостность и подлинность конверта — задача транспортного слоя (подпись, TLS)"
+  out_of_scope: transport, subscription, envelope_signature
 }
 
 # ─────────────────────────────────────────────────────────────────────────

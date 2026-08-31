@@ -3,7 +3,7 @@
 > **Prototype of a federated exchange protocol for digital cultural heritage objects between universities, museums, and libraries in a loosely coupled network.**
  
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Protocol Version](https://img.shields.io/badge/protocol-v0.0.4-green.svg)](docs/federated-exchange-document.md)
+[![Protocol Version](https://img.shields.io/badge/protocol-v0.0.5-green.svg)](docs/federated-exchange-document.md)
  
 ---
  
@@ -44,9 +44,17 @@
  
 ---
  
+## Концептуальные границы
+
+- Транспортный слой и механизм подписки на группы — предмет реализации и отдельной публикации; целостность и подлинность конверта обеспечиваются транспортным слоем (подпись, TLS).
+- Мастер-запись не выделяется: у каждого узла собственная карточка объекта; карточки связываются (`same_as`) и взаимно обогащаются по провенансу.
+- Универсальный классификатор — открытый версионируемый артефакт федерации; его публикация — следующий шаг.
+
+---
+
 ## Что реализовано
  
-- [UML-модель протокола обмена v0.0.4](docs/federated-exchange-document.md) + асинхронный транспортный конверт: один тип `publish` с двумя режимами (broadcast — полный снимок; таргетированный — возврат вклада получателя)
+- [UML-модель протокола обмена v0.0.5](docs/federated-exchange-document.md) + асинхронный транспортный конверт: один тип `publish` с двумя режимами (broadcast — полный снимок; таргетированный — возврат вклада получателя)
 - [JSON Schema модели данных](schema/federated-exchange-document.schema.json) и [JSON Schema конверта обмена](schema/exchange-envelope.schema.json)
 - [Правила протокола](docs/federated-exchange-document.rules.dsl): провенанс атрибутов, жизненный цикл дедупликации, согласование НСИ
 - [Примеры обмена между организациями А и Б](examples/README.md): broadcast-публикация полного снимка и таргетированный возврат вклада (сценарий из статьи)
