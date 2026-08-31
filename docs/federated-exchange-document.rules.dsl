@@ -91,6 +91,13 @@ rule person.registration {
   on_violation: reject_attribution
 }
 
+rule person.scoping {
+  description: "Идентичность персоны узловая: person_guid уникален в пределах узла; полная идентичность — пара (federation_node_guid, person_guid). Глобального реестра персон нет"
+  uniqueness: (federation_node_guid, person_guid)
+  scope: asserted_by_person_guid разрешается в связке с source_node_guid атрибута
+  on_violation: reject_attribution
+}
+
 rule metadata.conflict {
   description: "При противоречии атрибутов разных узлов оба значения сохраняются с пометкой source_node_guid; приоритет — у авторитетного источника (authority) или эксперта"
   precedence: authority_uri > expert(attribution_status) > source_node_guid

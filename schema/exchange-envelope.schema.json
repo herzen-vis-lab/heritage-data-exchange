@@ -49,7 +49,7 @@
     },
     "persons": {
       "type": "array",
-      "description": "Persons (experts) referenced by the envelope — attributors and verifiers of object metadata",
+      "description": "Persons (experts) referenced by the cards of this envelope — exchange context, not a global registry. Each person is owned by a node (its source_node_guid); full identity is the pair (federation_node_guid, person_guid)",
       "items": {
         "$ref": "federated-exchange-document.schema.json#/$defs/Person"
       }

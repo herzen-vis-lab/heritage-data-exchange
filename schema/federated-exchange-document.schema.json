@@ -183,7 +183,7 @@
         "asserted_by_person_guid": {
           "type": "string",
           "format": "uuid",
-          "description": "UUID of the expert (Person) who performed the attribution (provenance)"
+          "description": "UUID of the expert (Person) who performed the attribution. Scoped by source_node_guid (the node that asserted the classification)"
         },
         "created_at": {
           "type": "string",
@@ -241,7 +241,7 @@
         "asserted_by_person_guid": {
           "type": "string",
           "format": "uuid",
-          "description": "UUID of the expert (Person) who asserted/attributed this attribute (provenance)"
+          "description": "UUID of the expert (Person) who asserted/attributed this attribute. Scoped by the attribute's source_node_guid: the person belongs to the same node"
         },
         "attribution_status": {
           "$ref": "#/$defs/AttributionStatus",
@@ -268,6 +268,7 @@
     },
     "Person": {
       "title": "Person",
+      "description": "Expert (attributor/verifier) registered at a node. Identity is node-scoped: person_guid is unique within the owner node; full identity is the pair (federation_node_guid, person_guid). There is no global person registry — consistent with the no-central-operator principle",
       "type": "object",
       "properties": {
         "person_guid": {
