@@ -6,8 +6,13 @@
 проверка на дубликаты → взаимное обогащение карточек → возврат обновлённой
 карточки в организацию А.
 
-Файл: [`exchange-envelope.enrich-response.json`](exchange-envelope.enrich-response.json)
-— конверт типа `enrich_response`, итоговое состояние сценария.
+Файлы:
+
+- [`exchange-envelope.publish-broadcast.json`](exchange-envelope.publish-broadcast.json) —
+  конверт `publish` от организации А подписчикам «Группы 1» (broadcast,
+  без `receiver_node_guid`) — шаг 3;
+- [`exchange-envelope.enrich-response.json`](exchange-envelope.enrich-response.json) —
+  конверт `enrich_response` от Б к А — итоговое состояние сценария (шаги 4–6).
 
 ## Участники
 
@@ -33,7 +38,10 @@
    `asserted_by_person_guid` (эксперт, выполнивший атрибуцию), а также
    `attribution_status` — уровень верификации.
 
-3. **Публикация (А → Б).** Конверт `publish` с карточкой объекта.
+3. **Публикация (А → подписчики «Группы 1»).** Конверт `publish` с карточкой
+   объекта — [publish-broadcast.json](exchange-envelope.publish-broadcast.json).
+   Отправляется всем подписчикам группы классификатора (broadcast):
+   `receiver_node_guid` не указывается, получатель определяется подписками.
    Сервис Б, подписанный на «Группу 1», получает уведомление о создании
    новой карточки.
 

@@ -1,0 +1,82 @@
+{
+  "standard": "heritage-data-exchange",
+  "version": "0.0.4",
+  "generated_at": "2026-06-08T09:30:00Z",
+  "sender_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+  "exchange_type": "publish",
+  "objects": [
+    {
+      "digital_object_guid": "1f2e3d4c-5b6a-4c7d-9e8f-0a1b2c3d4e5f",
+      "digital_object_media_url": "https://storage.yandexcloud.net/techopark-bucket-exposition/bonec/",
+      "local_identifier": "bonec",
+      "record_url": "https://collections.herzen.spb.ru/catalog/bonec",
+      "created_at": "2026-06-08T09:15:00Z",
+      "modified_at": "2026-06-08T09:18:00Z",
+      "metadata": [
+        {
+          "key": "title",
+          "value": "Оси вращения локтевого сустава",
+          "language": "ru",
+          "authority": "https://collections.herzen.spb.ru/bonec",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "asserted_by_person_guid": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+          "attribution_status": "expert_verified",
+          "created_at": "2026-06-08T09:15:00Z",
+          "modified_at": "2026-06-08T09:15:00Z"
+        },
+        {
+          "key": "title",
+          "value": "Axes of rotation of the elbow joint",
+          "language": "en",
+          "authority": "https://collections.herzen.spb.ru/bonec",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "asserted_by_person_guid": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+          "attribution_status": "expert_verified",
+          "created_at": "2026-06-08T09:16:00Z",
+          "modified_at": "2026-06-08T09:16:00Z"
+        },
+        {
+          "key": "description",
+          "value": "Модель локтевого сустава с выделенными осями вращения позволяет наглядно изучить сложную биомеханику сочленения плечевой, локтевой и лучевой костей. Необходима для понимания движений верхней конечности.",
+          "language": "ru",
+          "authority": "https://collections.herzen.spb.ru/bonec",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "asserted_by_person_guid": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+          "attribution_status": "expert_verified",
+          "created_at": "2026-06-08T09:17:00Z",
+          "modified_at": "2026-06-08T09:17:00Z"
+        }
+      ],
+      "classification": [
+        {
+          "code": "Группа 1",
+          "authority": "https://heritage.example.org/ns/classifier/v1",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "asserted_by_person_guid": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+          "created_at": "2026-06-08T09:18:00Z",
+          "modified_at": "2026-06-08T09:18:00Z"
+        }
+      ]
+    }
+  ],
+  "persons": [
+    {
+      "person_guid": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+      "full_name": "Иван Макаров",
+      "language": "ru",
+      "metadata": [
+        {
+          "key": "role",
+          "value": "эксперт-атрибутор; создатель объектов цифрового культурного наследия",
+          "language": "ru",
+          "authority": "https://heritage.example.org/ns/metadata/v1#role",
+          "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+          "asserted_by_person_guid": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+          "attribution_status": "authoritative",
+          "created_at": "2026-06-08T09:10:00Z",
+          "modified_at": "2026-06-08T09:10:00Z"
+        }
+      ]
+    }
+  ]
+}
