@@ -12,7 +12,7 @@ version: "0.0.3"
 date-released: "2026-06-01"
 license: MIT
 repository-code: "https://github.com/herzen-vis-lab/heritage-data-exchange"
-url: "https://360-viewer-herzen.vercel.app"
+url: "https://collections.herzen.spb.ru/"
 
 authors:
   - family-names: Shmarev
