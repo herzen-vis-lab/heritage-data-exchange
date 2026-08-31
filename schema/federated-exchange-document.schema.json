@@ -180,6 +180,11 @@
           "format": "uuid",
           "description": "UUID of the node that asserted this classification (provenance)"
         },
+        "asserted_by_person_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the expert (Person) who performed the attribution (provenance)"
+        },
         "created_at": {
           "type": "string",
           "format": "date-time",
@@ -232,6 +237,15 @@
           "type": "string",
           "format": "uuid",
           "description": "UUID of the node that asserted this attribute (provenance; enables conflict resolution during enrichment)"
+        },
+        "asserted_by_person_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the expert (Person) who asserted/attributed this attribute (provenance)"
+        },
+        "attribution_status": {
+          "$ref": "#/$defs/AttributionStatus",
+          "description": "Verification level of the attribute: unverified, expert_verified, authoritative"
         },
         "created_at": {
           "type": "string",
@@ -365,6 +379,14 @@
         "candidate_match",
         "confirmed_match",
         "rejected_match"
+      ]
+    },
+    "AttributionStatus": {
+      "title": "AttributionStatus",
+      "enum": [
+        "unverified",
+        "expert_verified",
+        "authoritative"
       ]
     }
   }

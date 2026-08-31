@@ -47,6 +47,13 @@
         "$ref": "federated-exchange-document.schema.json#/$defs/DigitalObject"
       }
     },
+    "persons": {
+      "type": "array",
+      "description": "Persons (experts) referenced by the envelope — attributors and verifiers of object metadata",
+      "items": {
+        "$ref": "federated-exchange-document.schema.json#/$defs/Person"
+      }
+    },
     "relations": {
       "type": "array",
       "description": "Record linkage relations carried by the envelope (e.g. same_as between AK1 and BK1 with linkage status)",

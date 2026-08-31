@@ -40,6 +40,7 @@ class Classification {
    +string code
    +uri authority
    +UUID source_node_guid
+   +UUID asserted_by_person_guid
    +datetime created_at
    +datetime modified_at
 }
@@ -50,6 +51,8 @@ class Metadata {
    +language language
    +uri authority
    +UUID source_node_guid
+   +UUID asserted_by_person_guid
+   +enum attribution_status
    +datetime created_at
    +datetime modified_at
 }
@@ -101,6 +104,13 @@ DigitalObject "1" --> "0..*" Classification : classifications
 Person "1" --> "0..*" Metadata : metadata
 Person "1" --> "0..*" Classification : classifications
 ```
+
+Примечание (v0.0.4): провенанс атрибуции — каждый атрибут (`Metadata`) и
+классификация могут указывать эксперта-атрибутора (`asserted_by_person_guid`,
+ссылка на `Person`) и уровень верификации (`attribution_status`:
+`unverified` / `expert_verified` / `authoritative`). Эксперты узлов
+регистрируются и проходят верификацию уровня знаний; полная спецификация
+полей — в [JSON Schema](../schema/federated-exchange-document.schema.json).
 
 ## Транспортный конверт (Exchange Envelope)
 

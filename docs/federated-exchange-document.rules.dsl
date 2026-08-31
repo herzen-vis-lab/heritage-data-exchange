@@ -78,6 +78,19 @@ rule metadata.provenance {
   on_violation: drop_attribute
 }
 
+rule metadata.expert_attribution {
+  description: "Атрибуция выполняется экспертом узла: атрибуты, требующие экспертной верификации, обязаны указывать asserted_by_person_guid; уровень верификации фиксируется attribution_status"
+  require: asserted_by_person_guid if attribution_required(key)
+  statuses: attribution_status in [unverified, expert_verified, authoritative]
+  on_violation: drop_attribute
+}
+
+rule person.registration {
+  description: "Эксперт обязан быть зарегистрирован в узле и пройти верификацию уровня знаний до участия в атрибуции"
+  require: person_guid in node.experts
+  on_violation: reject_attribution
+}
+
 rule metadata.conflict {
   description: "При противоречии атрибутов разных узлов оба значения сохраняются с пометкой source_node_guid; приоритет — у авторитетного источника (authority) или эксперта"
   precedence: authority_uri > expert(attribution_status) > source_node_guid
