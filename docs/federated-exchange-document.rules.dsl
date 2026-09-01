@@ -245,3 +245,8 @@ rule ai.attribution {
   require: provenance preserved in derived datasets
   on_violation: reject_ai_usage
 }
+
+rule license.enforcement {
+  description: "Исполнение лицензионных условий — вне протокола, в рамках законодательства об исключительных правах (судебная защита); протокол обеспечивает доказуемость через провенанс: license + source_node_guid в карточке и сохранение провенанса в производных данных"
+  principle: protocol_provides_evidence, enforcement_is_legal
+}
