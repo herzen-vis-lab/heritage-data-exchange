@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/federated-exchange-document.schema.json",
   "title": "FederatedExchangeDocument",
-  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.6.",
+  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.7.",
   "$ref": "#/$defs/FederatedExchangeDocument",
   "$defs": {
     "FederatedExchangeDocument": {
@@ -166,6 +166,32 @@
             "$ref": "#/$defs/License"
           },
           "description": "Licenses of the digital object (like classification — code + authority)"
+        },
+        "entity_type": {
+          "type": "string",
+          "enum": [
+            "DigitalObject",
+            "Work",
+            "Manifestation",
+            "Item"
+          ],
+          "default": "DigitalObject",
+          "description": "Entity type: Work — abstract entity (the first registrar is the primary source of attributes); Manifestation — a realization of a Work; Item — a physical/local copy owned by a node"
+        },
+        "work_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Reference to the abstract Work entity (for Manifestation and Item)"
+        },
+        "manifestation_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Reference to the Manifestation (for Item)"
+        },
+        "owner_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the node owning the Item (for Item)"
         }
       },
       "required": [
@@ -389,7 +415,10 @@
       "enum": [
         "FederationNode",
         "DigitalObject",
-        "Person"
+        "Person",
+        "Work",
+        "Manifestation",
+        "Item"
       ]
     },
     "StatusType": {

@@ -3,7 +3,7 @@
 > **Prototype of a federated exchange protocol for digital cultural heritage objects between universities, museums, and libraries in a loosely coupled network.**
  
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Protocol Version](https://img.shields.io/badge/protocol-v0.0.6-green.svg)](docs/federated-exchange-document.md)
+[![Protocol Version](https://img.shields.io/badge/protocol-v0.0.7-green.svg)](docs/federated-exchange-document.md)
  
 ---
  
@@ -51,12 +51,13 @@
 - Универсальный классификатор — открытый версионируемый артефакт федерации; его публикация — следующий шаг.
 - Лицензии объектов задаются узлом `License` (код + authority) по аналогии с классификацией; authority может ссылаться на любой авторитетный источник, включая некоммерческую организацию (НКО) как один из вариантов.
 - Использование атрибутов в обучающих данных моделей ИИ — только при `is_enabled_for_ai_using = true`; отсутствие флага означает запрет (консервативный дефолт).
+- Сущности наследия моделируются как `Work` (абстрактная сущность; первый регистратор — первичный источник атрибутов), `Manifestation` (реализация Work) и `Item` (физический/локальный экземпляр у узла-владельца); Items разных узлов не являются дубликатами.
 
 ---
 
 ## Что реализовано
  
-- [UML-модель протокола обмена v0.0.6](docs/federated-exchange-document.md) + асинхронный транспортный конверт: один тип `publish` с двумя режимами (broadcast — полный снимок; таргетированный — возврат вклада получателя)
+- [UML-модель протокола обмена v0.0.7](docs/federated-exchange-document.md) + асинхронный транспортный конверт: один тип `publish` с двумя режимами (broadcast — полный снимок; таргетированный — возврат вклада получателя)
 - [JSON Schema модели данных](schema/federated-exchange-document.schema.json) и [JSON Schema конверта обмена](schema/exchange-envelope.schema.json)
 - [Правила протокола](docs/federated-exchange-document.rules.dsl): провенанс атрибутов, жизненный цикл дедупликации, согласование НСИ, лицензии объектов и использование данных в ИИ
 - [Примеры обмена между организациями А и Б](examples/README.md): broadcast-публикация полного снимка и таргетированный возврат вклада (сценарий из статьи)

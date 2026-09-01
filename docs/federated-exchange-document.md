@@ -1,4 +1,4 @@
-# Federated Exchange Document v0.0.6
+# Federated Exchange Document v0.0.7
 
 Модель данных и правила протокола федеративного обмена объектами цифрового
 культурного наследия в слабосвязанной сети независимых организаций.
@@ -50,6 +50,27 @@ class License {
    +uri authority
    +UUID source_node_guid
    +UUID asserted_by_person_guid
+   +datetime created_at
+   +datetime modified_at
+}
+
+class Work {
+   +UUID work_guid
+   +datetime created_at
+   +datetime modified_at
+}
+
+class Manifestation {
+   +UUID manifestation_guid
+   +uri digital_object_media_url
+   +datetime created_at
+   +datetime modified_at
+}
+
+class Item {
+   +UUID item_guid
+   +UUID owner_node_guid
+   +string local_identifier
    +datetime created_at
    +datetime modified_at
 }
@@ -112,11 +133,14 @@ DigitalObject "1" --> "0..*" Metadata : metadata
 DigitalObject "1" --> "0..*" Classification : classifications
 DigitalObject "1" --> "0..*" License : licenses
 
+Work "1" --> "0..*" Manifestation : manifestations
+Manifestation "1" --> "0..*" Item : items
+
 Person "1" --> "0..*" Metadata : metadata
 Person "1" --> "0..*" Classification : classifications
 ```
 
-Примечание (v0.0.6): провенанс атрибуции — каждый атрибут (`Metadata`) и
+Примечание (v0.0.7): провенанс атрибуции — каждый атрибут (`Metadata`) и
 классификация могут указывать эксперта-атрибутора (`asserted_by_person_guid`,
 ссылка на `Person`) и уровень верификации (`attribution_status`:
 `unverified` / `expert_verified` / `authoritative`). Эксперты узлов
@@ -137,6 +161,14 @@ Creative Commons, реестры организаций); некоммерчес
 Поле `is_enabled_for_ai_using` в `Metadata` разрешает использование значения
 атрибута в обучающих данных моделей ИИ; отсутствие флага означает запрет
 (консервативный дефолт).
+
+Сущности наследия моделируются через `entity_type` карточки (`DigitalObject`,
+`Work`, `Manifestation`, `Item`). `Work` — абстрактная сущность: первый
+регистратор является первичным источником её атрибутов. `Manifestation` —
+реализация `Work` (`work_guid`); `Item` — физический или локальный экземпляр,
+принадлежащий узлу-владельцу (`manifestation_guid`, `owner_node_guid`).
+Items разных узлов одной Manifestation не считаются дубликатами; дедупликация
+выполняется на уровне Work и Manifestation.
 
 ## Транспортный конверт (Exchange Envelope)
 

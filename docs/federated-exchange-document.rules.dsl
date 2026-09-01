@@ -1,4 +1,4 @@
-# Heritage Data Exchange — правила протокола v0.0.6 (черновик)
+# Heritage Data Exchange — правила протокола v0.0.7 (черновик)
 #
 # Правила задают поведение узлов федеративной сети: валидацию документов,
 # провенанс атрибутов, жизненный цикл дедупликации, семантику конвертов,
@@ -244,4 +244,25 @@ rule ai.attribution {
   description: "При использовании атрибутов в обучающих данных сохраняется атрибуция: source_node_guid и asserted_by_person_guid не удаляются"
   require: provenance preserved in derived datasets
   on_violation: reject_ai_usage
+}
+
+# ─────────────────────────────────────────────────────────────────────────
+# 9. Сущности наследия (Work / Manifestation / Item)
+# ─────────────────────────────────────────────────────────────────────────
+
+rule work.first_registrar {
+  description: "Work — абстрактная сущность; первый регистратор является первичным источником атрибутов Work; поздние регистрации Manifestation и Item наследуют атрибуты Work"
+  principle: first_registrar_is_primary
+}
+
+rule work.manifestation_item {
+  description: "Manifestation обязана ссылаться на Work (work_guid), Item — на Manifestation (manifestation_guid) и узел-владельца (owner_node_guid)"
+  require: work_guid for entity_type == Manifestation
+  require: manifestation_guid and owner_node_guid for entity_type == Item
+  on_violation: reject_envelope
+}
+
+rule item.dedup {
+  description: "Items разных узлов одной Manifestation не считаются дубликатами: это физические или локальные экземпляры; дедупликация выполняется на уровне Work и Manifestation"
+  principle: dedup_at_work_manifestation_level
 }
