@@ -1,4 +1,4 @@
-# Heritage Data Exchange — правила протокола v0.0.7 (черновик)
+# Heritage Data Exchange — правила протокола v0.0.8 (черновик)
 #
 # Правила задают поведение узлов федеративной сети: валидацию документов,
 # провенанс атрибутов, жизненный цикл дедупликации, семантику конвертов,
@@ -164,6 +164,17 @@ rule dedup.return_contribution {
   action: publish targeted(receiver = contributor)
 }
 
+rule event.dedup {
+  description: "Дедупликация — отдельное событие матчинга: обнаруженный дубликат фиксируется связью (candidate/confirmed/rejected). Событие матчинга не означает принятия атрибутов другой стороны"
+  action: publish Relation(status) — matching only
+}
+
+rule event.acceptance {
+  description: "Принятие или отклонение конкретного атрибута — отдельное логируемое событие: узел явно соглашается (accepts) или отклоняет (rejects) значение атрибута с обоснованием. В протоколе видно, кто и когда согласился с каким значением, а не только что карточки «взаимно обогатились»"
+  require: asserted_by_node_guid, timestamp, target attribute claim
+  on_violation: reject_event
+}
+
 # ─────────────────────────────────────────────────────────────────────────
 # 6. Конверты обмена
 # ─────────────────────────────────────────────────────────────────────────
@@ -255,9 +266,14 @@ rule license.enforcement {
 # 9. Сущности наследия (Work / Manifestation / Item)
 # ─────────────────────────────────────────────────────────────────────────
 
-rule work.first_registrar {
-  description: "Work — абстрактная сущность; первый регистратор является первичным источником атрибутов Work; поздние регистрации Manifestation и Item наследуют атрибуты Work"
-  principle: first_registrar_is_primary
+rule entity.identity_registrar {
+  description: "Первый регистратор является владельцем записи и идентификатора сущности (Work). Приоритет по времени применяется только к вопросу идентичности и владения записью и не распространяется на истинность атрибутов"
+  principle: time_priority_for_identity_only
+}
+
+rule attribute.truth {
+  description: "Истинность атрибутов не определяется временем регистрации: при расхождении атрибут хранится как множество конкурирующих заявлений (claims) с провенансом (см. attribute.claims), каноническое значение выбирается явным правилом разрешения конфликтов (см. conflict.resolution)"
+  principle: time_is_not_truth
 }
 
 rule work.manifestation_item {
@@ -270,5 +286,29 @@ rule work.manifestation_item {
 rule item.dedup {
   description: "Items разных узлов одной Manifestation не считаются дубликатами: это физические или локальные экземпляры; дедупликация выполняется на уровне Work и Manifestation"
   principle: dedup_at_work_manifestation_level
+}
+
+# ─────────────────────────────────────────────────────────────────────────
+# 10. Заявления об атрибутах и разрешение конфликтов
+# ─────────────────────────────────────────────────────────────────────────
+
+rule attribute.claims {
+  description: "Атрибут хранится как множество конкурирующих заявлений (claims) с провенансом, а не сворачивается в единое каноническое значение. При расхождении заявлений статус атрибута — unresolved: ошибка первого регистратора не «побеждает по умолчанию», дефолтной автоматической победы нет"
+  action: keep_all_claims_with_provenance
+  status: unresolved until resolution
+}
+
+rule conflict.resolution {
+  description: "Каноническое значение выбирается явным правилом: (1) заявление становится canonical только после N≥2 независимых подтверждений от разных узлов; (2) действует окно оспаривания — в течение периода любой узел может подать встречное заявление с обоснованием (ссылка на источник, экспертиза); (3) при отсутствии оспаривания заявление первого регистратора становится дефолтным — как fallback, а не единственное правило"
+  threshold: N >= 2 independent confirmations
+  challenge_window: open for dispute with justification
+  fallback: first_registrar_default_if_no_challenge
+  note: "Меняет экономику Sybil-атаки: для продавливания ложного атрибута требуется N сговорившихся узлов, а не один"
+}
+
+rule rights.holder_confirmation {
+  description: "Регистрация работ, созданных третьими лицами (например, студенческих работ), требует явного подтверждения правообладателя: rights_holder_confirmation (кто подтвердил, когда). Без подтверждения регистрация отклоняется; это не решает вопрос «кому принадлежит право», но исключает регистрацию чужой работы без ведома автора"
+  require: rights_holder_confirmation for third-party works
+  on_violation: reject_registration
 }
 }

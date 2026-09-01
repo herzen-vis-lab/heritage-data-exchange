@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/federated-exchange-document.schema.json",
   "title": "FederatedExchangeDocument",
-  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.7.",
+  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.8.",
   "$ref": "#/$defs/FederatedExchangeDocument",
   "$defs": {
     "FederatedExchangeDocument": {
@@ -192,6 +192,34 @@
           "type": "string",
           "format": "uuid",
           "description": "UUID of the node owning the Item (for Item)"
+        },
+        "rights_holder_confirmation": {
+          "type": "object",
+          "description": "Явное подтверждение правообладателя при регистрации работ, созданных третьими лицами (например, студенческих): исключает регистрацию чужой работы без ведома автора",
+          "properties": {
+            "confirmed": {
+              "type": "boolean",
+              "const": true
+            },
+            "confirmed_by_person_guid": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Правообладатель (например, студент), подтвердивший регистрацию"
+            },
+            "confirmed_at": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "note": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "confirmed",
+            "confirmed_by_person_guid",
+            "confirmed_at"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
@@ -300,6 +328,21 @@
         "is_enabled_for_ai_using": {
           "type": "boolean",
           "description": "Allows using the attribute value in AI training data. Absent means not allowed (conservative default)"
+        },
+        "status": {
+          "enum": [
+            "unresolved",
+            "canonical",
+            "rejected"
+          ],
+          "description": "Статус атрибута: unresolved — заявления расходятся и конфликт не разрешён; canonical — достигнуто N≥2 независимых подтверждений или дефолт по fallback; rejected — отклонено"
+        },
+        "claims": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Claim"
+          },
+          "description": "Конкурирующие заявления по этому атрибуту; значение самого атрибута (value) — одно из заявлений, остальные — в claims"
         }
       },
       "required": [
@@ -474,6 +517,62 @@
       "required": [
         "code",
         "authority"
+      ],
+      "additionalProperties": false
+    },
+    "Claim": {
+      "title": "Claim",
+      "type": "object",
+      "description": "Конкурирующее заявление о значении атрибута с провенансом; атрибут хранится как множество claims, а не как единое каноническое значение",
+      "properties": {
+        "value": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            }
+          ],
+          "description": "JSON scalar value of the claim"
+        },
+        "source_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Узел, заявивший значение"
+        },
+        "asserted_by_person_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Эксперт, заявивший значение (scoped by source_node_guid)"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Уверенность заявления 0..1"
+        },
+        "status": {
+          "enum": [
+            "candidate",
+            "canonical",
+            "rejected"
+          ],
+          "description": "candidate — заявлено, не разрешено; canonical — после N≥2 независимых подтверждений; rejected — отклонено"
+        }
+      },
+      "required": [
+        "value",
+        "source_node_guid",
+        "created_at"
       ],
       "additionalProperties": false
     }

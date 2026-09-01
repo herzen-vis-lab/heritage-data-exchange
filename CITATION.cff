@@ -8,8 +8,8 @@ abstract: >
   coupled network. Implements federated MDM patterns: node identification without
   a central operator, record linkage between independent repositories, and
   authority-based NSI reconciliation in a federated topology.
-version: "0.0.7"
-date-released: "2026-09-02"
+version: "0.0.8"
+date-released: "2026-09-03"
 license: MIT
 repository-code: "https://github.com/herzen-vis-lab/heritage-data-exchange"
 url: "https://collections.herzen.spb.ru/"

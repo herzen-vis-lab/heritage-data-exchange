@@ -1,4 +1,4 @@
-# Federated Exchange Document v0.0.7
+# Federated Exchange Document v0.0.8
 
 Модель данных и правила протокола федеративного обмена объектами цифрового
 культурного наследия в слабосвязанной сети независимых организаций.
@@ -29,9 +29,11 @@ class FederationNode {
 
 class DigitalObject {
    +UUID digital_object_guid
+   +enum entity_type
    +uri digital_object_media_url
    +string local_identifier
    +uri record_url
+   +rights_holder_confirmation
    +datetime created_at
    +datetime modified_at
 }
@@ -52,6 +54,15 @@ class License {
    +UUID asserted_by_person_guid
    +datetime created_at
    +datetime modified_at
+}
+
+class Claim {
+   +scalar value
+   +UUID source_node_guid
+   +UUID asserted_by_person_guid
+   +number confidence
+   +enum status
+   +datetime created_at
 }
 
 class Work {
@@ -83,6 +94,8 @@ class Metadata {
    +UUID source_node_guid
    +UUID asserted_by_person_guid
    +enum attribution_status
+   +enum status
+   +Claim[] claims
    +datetime created_at
    +datetime modified_at
 }
@@ -140,7 +153,7 @@ Person "1" --> "0..*" Metadata : metadata
 Person "1" --> "0..*" Classification : classifications
 ```
 
-Примечание (v0.0.7): провенанс атрибуции — каждый атрибут (`Metadata`) и
+Примечание (v0.0.8): провенанс атрибуции — каждый атрибут (`Metadata`) и
 классификация могут указывать эксперта-атрибутора (`asserted_by_person_guid`,
 ссылка на `Person`) и уровень верификации (`attribution_status`:
 `unverified` / `expert_verified` / `authoritative`). Эксперты узлов
@@ -169,6 +182,15 @@ Creative Commons, реестры организаций); некоммерчес
 принадлежащий узлу-владельцу (`manifestation_guid`, `owner_node_guid`).
 Items разных узлов одной Manifestation не считаются дубликатами; дедупликация
 выполняется на уровне Work и Manifestation.
+
+Приоритет по времени (первый регистратор) применяется только к идентичности
+и владению записью, но не к истинности атрибутов. При расхождении атрибут
+хранится как множество заявлений (`Claim`) с провенансом и статусом
+(`unresolved` / `canonical` / `rejected`). Каноническое значение выбирается
+явным правилом: N≥2 независимых подтверждений, окно оспаривания, fallback
+первого регистратора при отсутствии оспаривания. Дедупликация (matching) и
+принятие атрибутов (acceptance) — раздельные события протокола. Регистрация
+работ, созданных третьими лицами, требует `rights_holder_confirmation`.
 
 ## Транспортный конверт (Exchange Envelope)
 
