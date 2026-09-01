@@ -23,7 +23,26 @@
           "attribution_status": "expert_verified",
           "created_at": "2026-06-10T12:20:00Z",
           "modified_at": "2026-06-10T12:25:00Z",
-          "is_enabled_for_ai_using": false
+          "is_enabled_for_ai_using": false,
+          "status": "unresolved",
+          "claims": [
+            {
+              "value": "Пластик, металл",
+              "source_node_guid": "7e8d9f0a-2b4c-4d5e-8f6a-9b0c1d2e3f4a",
+              "asserted_by_person_guid": "6b7c8d9e-0f1a-4b2c-9d3e-4f5a6b7c8d9e",
+              "created_at": "2026-06-10T12:20:00Z",
+              "confidence": 0.8,
+              "status": "candidate"
+            },
+            {
+              "value": "Пластик, металл, дерево",
+              "source_node_guid": "4f2a9c1e-8b3d-4f6a-9c2e-1a2b3c4d5e6f",
+              "asserted_by_person_guid": "5a6b7c8d-9e0f-4a1b-8c2d-3e4f5a6b7c8d",
+              "created_at": "2026-06-11T09:00:00Z",
+              "confidence": 0.9,
+              "status": "candidate"
+            }
+          ]
         },
         {
           "key": "purpose",
@@ -49,7 +68,9 @@
           "modified_at": "2026-06-10T12:25:00Z",
           "is_enabled_for_ai_using": false
         }
-      ]
+      ],
+      "entity_type": "Manifestation",
+      "work_guid": "9a8b7c6d-5e4f-4a3b-9c2d-1e0f1a2b3c4d"
     }
   ],
   "persons": [
