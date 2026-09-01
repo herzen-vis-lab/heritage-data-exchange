@@ -4,6 +4,10 @@
  
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Protocol Version](https://img.shields.io/badge/protocol-v0.0.8-green.svg)](docs/federated-exchange-document.md)
+
+**Статус:** концептуальная модель + JSON Schema + примеры обмена (актуальная версия протокола — v0.0.8); транспортный слой — в разработке.
+
+**Готовые примеры обмена между двумя организациями — см. папку [examples](examples/README.md).**
  
 ---
  
