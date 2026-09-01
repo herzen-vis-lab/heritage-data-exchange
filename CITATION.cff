@@ -5,9 +5,9 @@ title: "Heritage Data Exchange: Federated Protocol for Digital Cultural Heritage
 abstract: >
   Prototype of a federated exchange protocol for digital cultural heritage objects
   between universities, museums, libraries and other organizations in a loosely
-  coupled network. Implements federated MDM patterns: node identification without
+  coupled network. Implements federated data management patterns: node identification without
   a central operator, record linkage between independent repositories, and
-  authority-based NSI reconciliation in a federated topology.
+  authority-based classifier reconciliation in a federated topology.
 version: "0.0.8"
 date-released: "2026-09-03"
 license: MIT
