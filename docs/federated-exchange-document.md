@@ -1,4 +1,4 @@
-# Federated Exchange Document v0.0.5
+# Federated Exchange Document v0.0.6
 
 Модель данных и правила протокола федеративного обмена объектами цифрового
 культурного наследия в слабосвязанной сети независимых организаций.
@@ -37,6 +37,15 @@ class DigitalObject {
 }
 
 class Classification {
+   +string code
+   +uri authority
+   +UUID source_node_guid
+   +UUID asserted_by_person_guid
+   +datetime created_at
+   +datetime modified_at
+}
+
+class License {
    +string code
    +uri authority
    +UUID source_node_guid
@@ -96,16 +105,18 @@ FederationNode "1" --> "0..*" DigitalObject : digital_objects
 FederationNode "1" --> "0..*" Person : persons
 FederationNode "1" --> "0..*" Metadata : metadata
 FederationNode "1" --> "0..*" Classification : classifications
+FederationNode "1" --> "0..*" License : licenses
 FederationNode "1" --> "0..*" Relation : relations
 
 DigitalObject "1" --> "0..*" Metadata : metadata
 DigitalObject "1" --> "0..*" Classification : classifications
+DigitalObject "1" --> "0..*" License : licenses
 
 Person "1" --> "0..*" Metadata : metadata
 Person "1" --> "0..*" Classification : classifications
 ```
 
-Примечание (v0.0.5): провенанс атрибуции — каждый атрибут (`Metadata`) и
+Примечание (v0.0.6): провенанс атрибуции — каждый атрибут (`Metadata`) и
 классификация могут указывать эксперта-атрибутора (`asserted_by_person_guid`,
 ссылка на `Person`) и уровень верификации (`attribution_status`:
 `unverified` / `expert_verified` / `authoritative`). Эксперты узлов
@@ -118,6 +129,14 @@ Person "1" --> "0..*" Classification : classifications
 глобальный реестр. Идентичность персоны — пара
 `(federation_node_guid, person_guid)`; `asserted_by_person_guid` разрешается
 в связке с `source_node_guid` атрибута.
+
+Лицензии (`License`) задаются по аналогии с классификацией: код + `authority`.
+`authority` может ссылаться на любой авторитетный источник лицензий (SPDX,
+Creative Commons, реестры организаций); некоммерческая организация (НКО)
+— один из возможных авторитетных источников, а не управляющий орган сети.
+Поле `is_enabled_for_ai_using` в `Metadata` разрешает использование значения
+атрибута в обучающих данных моделей ИИ; отсутствие флага означает запрет
+(консервативный дефолт).
 
 ## Транспортный конверт (Exchange Envelope)
 

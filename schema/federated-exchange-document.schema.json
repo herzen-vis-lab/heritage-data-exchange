@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/federated-exchange-document.schema.json",
   "title": "FederatedExchangeDocument",
-  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.5.",
+  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.6.",
   "$ref": "#/$defs/FederatedExchangeDocument",
   "$defs": {
     "FederatedExchangeDocument": {
@@ -98,6 +98,13 @@
           "items": {
             "$ref": "#/$defs/Relation"
           }
+        },
+        "license": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/License"
+          },
+          "description": "Licenses applied by default to objects published by this node"
         }
       },
       "required": [
@@ -152,6 +159,13 @@
           "items": {
             "$ref": "#/$defs/Classification"
           }
+        },
+        "license": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/License"
+          },
+          "description": "Licenses of the digital object (like classification — code + authority)"
         }
       },
       "required": [
@@ -256,6 +270,10 @@
           "type": "string",
           "format": "date-time",
           "description": "ISO 8601 UTC timestamp"
+        },
+        "is_enabled_for_ai_using": {
+          "type": "boolean",
+          "description": "Allows using the attribute value in AI training data. Absent means not allowed (conservative default)"
         }
       },
       "required": [
@@ -389,6 +407,46 @@
         "expert_verified",
         "authoritative"
       ]
+    },
+    "License": {
+      "title": "License",
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "License code, e.g. CC-BY-4.0 (SPDX identifier)"
+        },
+        "authority": {
+          "type": "string",
+          "format": "uri",
+          "description": "URI of the authoritative source of the license (SPDX, Creative Commons, a registry of an organization, or a non-profit organization (NGO) as one possible variant)"
+        },
+        "source_node_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the node that asserted this license (provenance)"
+        },
+        "asserted_by_person_guid": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the expert (Person) who asserted the license. Scoped by source_node_guid"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp"
+        }
+      },
+      "required": [
+        "code",
+        "authority"
+      ],
+      "additionalProperties": false
     }
   }
 }

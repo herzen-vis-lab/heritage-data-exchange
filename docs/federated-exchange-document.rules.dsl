@@ -1,4 +1,4 @@
-# Heritage Data Exchange — правила протокола v0.0.5 (черновик)
+# Heritage Data Exchange — правила протокола v0.0.6 (черновик)
 #
 # Правила задают поведение узлов федеративной сети: валидацию документов,
 # провенанс атрибутов, жизненный цикл дедупликации, семантику конвертов,
@@ -210,4 +210,38 @@ rule nsi.dispute {
   description: "Спор о классификации объекта между узлами разрешается по авторитетности словаря или экспертной атрибуцией, фиксируется в карточке"
   precedence: authority_uri > expert(attribution_status)
   action: annotate_dispute_in_classification
+}
+
+# ─────────────────────────────────────────────────────────────────────────
+# 8. Лицензии и использование данных в ИИ
+# ─────────────────────────────────────────────────────────────────────────
+
+rule license.required {
+  description: "Объекты, публикуемые в федерации, должны нести как минимум одну лицензию (license) с authority"
+  require: license for each published object
+  on_violation: warn
+}
+
+rule license.authority {
+  description: "authority лицензии может ссылаться на любой авторитетный источник (SPDX, Creative Commons, реестры организаций); некоммерческая организация (НКО) — один из возможных вариантов авторитетного источника"
+  allowed: any_registered_authority incl. ngo_registry
+  on_violation: warn
+}
+
+rule authority.flexible {
+  description: "Координация сети — через открытые артефакты (формат, классификатор, правила); authority может указывать на любой авторитетный источник, включая НКО, но ни один источник не является управляющим органом сети"
+  principle: artifacts_not_organs
+}
+
+rule ai.usage {
+  description: "Использование значений атрибутов в обучающих данных моделей ИИ разрешено только при is_enabled_for_ai_using = true; отсутствие флага означает запрет (консервативный дефолт)"
+  condition: is_enabled_for_ai_using == true implies usable_for_ai_training
+  default: false
+  on_violation: reject_ai_usage
+}
+
+rule ai.attribution {
+  description: "При использовании атрибутов в обучающих данных сохраняется атрибуция: source_node_guid и asserted_by_person_guid не удаляются"
+  require: provenance preserved in derived datasets
+  on_violation: reject_ai_usage
 }
