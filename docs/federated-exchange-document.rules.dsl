@@ -246,6 +246,11 @@ rule ai.attribution {
   on_violation: reject_ai_usage
 }
 
+rule license.enforcement {
+  description: "Исполнение лицензионных условий — вне протокола, в рамках законодательства об исключительных правах (судебная защита); протокол обеспечивает доказуемость через провенанс: license + source_node_guid в карточке и сохранение провенанса в производных данных"
+  principle: protocol_provides_evidence, enforcement_is_legal
+}
+
 # ─────────────────────────────────────────────────────────────────────────
 # 9. Сущности наследия (Work / Manifestation / Item)
 # ─────────────────────────────────────────────────────────────────────────
@@ -265,4 +270,5 @@ rule work.manifestation_item {
 rule item.dedup {
   description: "Items разных узлов одной Manifestation не считаются дубликатами: это физические или локальные экземпляры; дедупликация выполняется на уровне Work и Manifestation"
   principle: dedup_at_work_manifestation_level
+}
 }
