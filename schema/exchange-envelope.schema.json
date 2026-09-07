@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/exchange-envelope.schema.json",
+  "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/v0.1.0/schema/exchange-envelope.schema.json",
   "title": "ExchangeEnvelope",
   "description": "Asynchronous transport envelope of the federated exchange. The only exchange type is publish: a node publishes the state of an object. The mode is determined by receiver_node_guid: absent — broadcast to group subscribers (full snapshot known to the sender); present — targeted delivery of the receiver's own contribution back to it (attributes with source_node_guid == receiver_node_guid, relations involving the receiver, and minimal object context).",
   "type": "object",
@@ -16,18 +16,15 @@
       "description": "Semantic version (MAJOR.MINOR.PATCH) of the protocol"
     },
     "generated_at": {
-      "type": "string",
-      "format": "date-time",
+      "$ref": "federated-exchange-document.schema.json#/$defs/TimestampRfc3339Utc",
       "description": "ISO 8601 UTC timestamp of envelope generation"
     },
     "sender_node_guid": {
-      "type": "string",
-      "format": "uuid",
+      "$ref": "federated-exchange-document.schema.json#/$defs/Uuid4",
       "description": "UUID of the sending node. Must match the federation_node_guid of the registered sender"
     },
     "receiver_node_guid": {
-      "type": "string",
-      "format": "uuid",
+      "$ref": "federated-exchange-document.schema.json#/$defs/Uuid4",
       "description": "Mode switch. Absent/empty — broadcast: full snapshot of the object (all attributes with all source_node_guid known to the sender) to subscribers of the classification group. Present — targeted delivery: the card carries only the receiver's own contribution (attributes with source_node_guid == receiver_node_guid), relations involving the receiver, and minimal object context (guid, media, local_identifier, record_url)"
     },
     "objects": {

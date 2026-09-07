@@ -1,17 +1,29 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/main/schema/federated-exchange-document.schema.json",
+  "$id": "https://raw.githubusercontent.com/herzen-vis-lab/heritage-data-exchange/v0.1.0/schema/federated-exchange-document.schema.json",
   "title": "FederatedExchangeDocument",
-  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.0.8.",
+  "description": "Federated exchange of digital cultural heritage objects in a loosely coupled network. Data model v0.1.0. Root type: full federation state snapshot (export/backup artifact, NOT the exchange unit). Exchange between nodes uses ExchangeEnvelope (see exchange-envelope.schema.json).",
   "$ref": "#/$defs/FederatedExchangeDocument",
   "$defs": {
+    "Uuid4": {
+      "title": "Uuid4",
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+      "description": "UUID v4, lowercase, immutable after assignment"
+    },
+    "TimestampRfc3339Utc": {
+      "title": "TimestampRfc3339Utc",
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?Z$",
+      "description": "RFC 3339 UTC timestamp with mandatory Z suffix (no arbitrary offset)"
+    },
     "FederatedExchangeDocument": {
       "title": "FederatedExchangeDocument",
       "type": "object",
       "properties": {
         "federated_exchange_document_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Globally unique (UUID v4), immutable, lowercase"
         },
         "standard": {
@@ -25,16 +37,15 @@
           "description": "Semantic version (MAJOR.MINOR.PATCH) of the exchange document"
         },
         "generated_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
-        "federationnode": {
+        "federation_nodes": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/FederationNode"
           },
-          "description": "Nodes (organizations) participating in the federation snapshot"
+          "description": "Nodes (organizations) in the federation state snapshot. The snapshot is an export/backup artifact — the exchange unit between nodes is the ExchangeEnvelope, not this document"
         }
       },
       "required": [
@@ -50,8 +61,7 @@
       "type": "object",
       "properties": {
         "federation_node_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Globally unique (UUID v4), immutable, lowercase. Identifies the organization-node without a central operator"
         },
         "federation_node_url": {
@@ -60,26 +70,26 @@
           "description": "Base URL of the node service (exchange endpoint)"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
         "modified_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
-        "digitalobject": {
+        "digital_objects": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/DigitalObject"
-          }
+          },
+          "description": "Digital object cards owned by this node"
         },
-        "person": {
+        "persons": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/Person"
-          }
+          },
+          "description": "Persons (experts) registered at this node; owner node of each person is this FederationNode"
         },
         "metadata": {
           "type": "array",
@@ -93,7 +103,7 @@
             "$ref": "#/$defs/Classification"
           }
         },
-        "relation": {
+        "relations": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/Relation"
@@ -120,14 +130,13 @@
       "type": "object",
       "properties": {
         "digital_object_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Globally unique (UUID v4), immutable, lowercase. Assigned by the source organization"
         },
         "digital_object_media_url": {
           "type": "string",
           "format": "uri",
-          "description": "URL of the digital representation (media) of the object"
+          "description": "URL of the digital representation (media) of the object. Optional: an abstract Work may have no digital representation yet (see rules object.media)"
         },
         "local_identifier": {
           "type": "string",
@@ -139,13 +148,11 @@
           "description": "Canonical URL of the object record in the source organization's service"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
         "modified_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
         "metadata": {
@@ -179,18 +186,15 @@
           "description": "Entity type: Work — abstract entity (the first registrar is the primary source of attributes); Manifestation — a realization of a Work; Item — a physical/local copy owned by a node"
         },
         "work_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Reference to the abstract Work entity (for Manifestation and Item)"
         },
         "manifestation_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Reference to the Manifestation (for Item)"
         },
         "owner_node_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the node owning the Item (for Item)"
         },
         "rights_holder_confirmation": {
@@ -202,13 +206,11 @@
               "const": true
             },
             "confirmed_by_person_guid": {
-              "type": "string",
-              "format": "uuid",
+              "$ref": "#/$defs/Uuid4",
               "description": "Правообладатель (например, студент), подтвердивший регистрацию"
             },
             "confirmed_at": {
-              "type": "string",
-              "format": "date-time"
+              "$ref": "#/$defs/TimestampRfc3339Utc"
             },
             "note": {
               "type": "string"
@@ -224,11 +226,47 @@
       },
       "required": [
         "digital_object_guid",
-        "digital_object_media_url",
         "created_at",
         "modified_at"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "entity_type": {
+                "const": "Manifestation"
+              }
+            },
+            "required": [
+              "entity_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "work_guid"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "entity_type": {
+                "const": "Item"
+              }
+            },
+            "required": [
+              "entity_type"
+            ]
+          },
+          "then": {
+            "required": [
+              "manifestation_guid",
+              "owner_node_guid"
+            ]
+          }
+        }
+      ]
     },
     "Classification": {
       "title": "Classification",
@@ -244,23 +282,19 @@
           "description": "URI of the authoritative vocabulary (AAT, ULAN, LCSH, VIAF or a federation-registered classifier)"
         },
         "source_node_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the node that asserted this classification (provenance)"
         },
         "asserted_by_person_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the expert (Person) who performed the attribution. Scoped by source_node_guid (the node that asserted the classification)"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
         "modified_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         }
       },
@@ -302,13 +336,11 @@
           "description": "URI of the authoritative source defining the semantics of the attribute"
         },
         "source_node_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the node that asserted this attribute (provenance; enables conflict resolution during enrichment)"
         },
         "asserted_by_person_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the expert (Person) who asserted/attributed this attribute. Scoped by the attribute's source_node_guid: the person belongs to the same node"
         },
         "attribution_status": {
@@ -316,13 +348,11 @@
           "description": "Verification level of the attribute: unverified, expert_verified, authoritative"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
         "modified_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
         "is_enabled_for_ai_using": {
@@ -351,17 +381,31 @@
         "language",
         "authority"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "if": {
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "required": [
+          "claims"
+        ],
+        "description": "An attribute whose conflict status is declared (unresolved/canonical/rejected) must carry the competing claims it refers to"
+      }
     },
     "Person": {
       "title": "Person",
-      "description": "Expert (attributor/verifier) registered at a node. Identity is node-scoped: person_guid is unique within the owner node; full identity is the pair (federation_node_guid, person_guid). There is no global person registry — consistent with the no-central-operator principle",
+      "description": "Expert (attributor/verifier) registered at a node. Identity is node-scoped: person_guid is unique within the owner node; full identity is the pair (owner_node_guid, person_guid). There is no global person registry — consistent with the no-central-operator principle",
       "type": "object",
       "properties": {
         "person_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Globally unique (UUID v4), immutable, lowercase"
+        },
+        "owner_node_guid": {
+          "$ref": "#/$defs/Uuid4",
+          "description": "UUID of the node owning this person record. In a FederationNode snapshot it is inherited from the containing node; in an ExchangeEnvelope it makes the ownership pair (owner_node_guid, person_guid) explicit (defaults to envelope sender_node_guid)"
         },
         "full_name": {
           "type": "string"
@@ -395,29 +439,30 @@
       "type": "object",
       "properties": {
         "relation_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Globally unique (UUID v4), immutable, lowercase"
         },
         "source_type": {
           "$ref": "#/$defs/NodeType"
         },
         "source_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the source node (FederationNode, DigitalObject or Person)"
         },
         "target_type": {
           "$ref": "#/$defs/NodeType"
         },
         "target_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the target node (FederationNode, DigitalObject or Person)"
         },
-        "relation": {
+        "relation_type": {
           "type": "string",
-          "description": "Relation type, e.g. same_as, duplicate_of"
+          "enum": [
+            "same_as",
+            "duplicate_of"
+          ],
+          "description": "Relation type. Base vocabulary: same_as (record linkage), duplicate_of; richer semantics are expressed by the authority URI, extensions land in the federation relation registry"
         },
         "authority": {
           "type": "string",
@@ -429,14 +474,20 @@
           "description": "Record linkage status: candidate_match, confirmed_match or rejected_match"
         },
         "asserted_by_node_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the node that asserted the relation (provenance)"
         },
+        "confirmed_by_node_guid": {
+          "$ref": "#/$defs/Uuid4",
+          "description": "UUID of the node that confirmed the relation (status confirmed_match). A status change is published as a new version of the same relation_guid with a later modified_at — the protocol layer keeps the history"
+        },
         "created_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
+        },
+        "modified_at": {
+          "$ref": "#/$defs/TimestampRfc3339Utc",
+          "description": "ISO 8601 UTC timestamp; later value than created_at signals a status update of the same relation_guid"
         }
       },
       "required": [
@@ -445,7 +496,7 @@
         "source_guid",
         "target_type",
         "target_guid",
-        "relation",
+        "relation_type",
         "authority",
         "status",
         "asserted_by_node_guid",
@@ -455,13 +506,11 @@
     },
     "NodeType": {
       "title": "NodeType",
+      "description": "Types of relation endpoints. Work / Manifestation / Item are not separately addressable nodes: they are entity_type values of a DigitalObject card, so a relation between two heritage entities points at the cards with type DigitalObject (the card carries entity_type)",
       "enum": [
         "FederationNode",
         "DigitalObject",
-        "Person",
-        "Work",
-        "Manifestation",
-        "Item"
+        "Person"
       ]
     },
     "StatusType": {
@@ -494,23 +543,19 @@
           "description": "URI of the authoritative source of the license (SPDX, Creative Commons, a registry of an organization, or a non-profit organization (NGO) as one possible variant)"
         },
         "source_node_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the node that asserted this license (provenance)"
         },
         "asserted_by_person_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "UUID of the expert (Person) who asserted the license. Scoped by source_node_guid"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         },
         "modified_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC timestamp"
         }
       },
@@ -540,18 +585,15 @@
           "description": "JSON scalar value of the claim"
         },
         "source_node_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Узел, заявивший значение"
         },
         "asserted_by_person_guid": {
-          "type": "string",
-          "format": "uuid",
+          "$ref": "#/$defs/Uuid4",
           "description": "Эксперт, заявивший значение (scoped by source_node_guid)"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time",
+          "$ref": "#/$defs/TimestampRfc3339Utc",
           "description": "ISO 8601 UTC"
         },
         "confidence": {
