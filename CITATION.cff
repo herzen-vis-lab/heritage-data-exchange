@@ -8,8 +8,8 @@ abstract: >
   coupled network. Implements federated data management patterns: node identification without
   a central operator, record linkage between independent repositories, and
   authority-based classifier reconciliation in a federated topology.
-version: "0.0.8"
-date-released: "2026-09-03"
+version: "0.1.0"
+date-released: "2026-09-07"
 license: MIT
 repository-code: "https://github.com/herzen-vis-lab/heritage-data-exchange"
 url: "https://collections.herzen.spb.ru/"
@@ -29,11 +29,11 @@ authors:
     affiliation: "Herzen State Pedagogical University of Russia"
 
 keywords:
-  - federated-mdm
+  - federated-data-exchange
   - cultural-heritage
   - data-exchange
   - record-linkage
-  - nsi
+  - classifier-reconciliation
   - data-governance
   - loosely-coupled-network
   - json-schema
