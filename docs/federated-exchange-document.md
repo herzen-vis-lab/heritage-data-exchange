@@ -1,17 +1,29 @@
-# Federated Exchange Document v0.0.8
+# Federated Exchange Document v0.1.0
 
 Модель данных и правила протокола федеративного обмена объектами цифрового
 культурного наследия в слабосвязанной сети независимых организаций.
 
-Машиночитаемые артефакты:
+Машиночитаемые и проверяемые артефакты:
 
 - [JSON Schema модели данных](../schema/federated-exchange-document.schema.json)
 - [JSON Schema конверта обмена](../schema/exchange-envelope.schema.json)
 - [Правила протокола](federated-exchange-document.rules.dsl)
+- [Проверяемый набор правил](../tests/README.md) — тесты и негативные фикстуры (CI)
 - [Пример обмена А/Б](../examples/README.md)
+- [Решения (ADR)](adr/)
+
+Слои (v0.1.0): единица обмена между узлами — `ExchangeEnvelope`;
+`FederatedExchangeDocument` (корневой тип) — полный снимок состояния
+федерации: артефакт экспорта/резервирования, в обмене напрямую не участвует.
+Решение зафиксировано в [ADR 0003](adr/0003-layering-and-versioning.md).
 
 ```mermaid
 classDiagram
+%% Work / Manifestation / Item — концептуальные уровни сущностей наследия.
+%% В данных это НЕ отдельные классы: это значения entity_type карточки
+%% DigitalObject, а work_guid / manifestation_guid / owner_node_guid —
+%% поля той же карточки (см. JSON Schema). Отдельные классы ниже —
+%% концептуальная проекция для читаемости.
 
 class FederatedExchangeDocument {
    +UUID federated_exchange_document_guid
@@ -86,6 +98,11 @@ class Item {
    +datetime modified_at
 }
 
+%% Концептуальные уровни как значения entity_type карточки DigitalObject:
+%% Work -- карточка с entity_type=Work (её digital_object_guid играет роль work_guid);
+%% Manifestation -- карточка с entity_type=Manifestation и полем work_guid;
+%% Item -- карточка с entity_type=Item и полями manifestation_guid + owner_node_guid.
+
 class Metadata {
    +string key
    +scalar value
@@ -102,6 +119,7 @@ class Metadata {
 
 class Person {
    +UUID person_guid
+   +UUID owner_node_guid
    +string full_name
    +language language
 }
@@ -112,11 +130,13 @@ class Relation {
    +UUID source_guid
    +NodeType target_type
    +UUID target_guid
-   +string relation
+   +enum relation_type
    +uri authority
    +StatusType status
    +UUID asserted_by_node_guid
+   +UUID confirmed_by_node_guid
    +datetime created_at
+   +datetime modified_at
 }
 
 class NodeType {
@@ -153,7 +173,7 @@ Person "1" --> "0..*" Metadata : metadata
 Person "1" --> "0..*" Classification : classifications
 ```
 
-Примечание (v0.0.8): провенанс атрибуции — каждый атрибут (`Metadata`) и
+Примечание (v0.1.0): провенанс атрибуции — каждый атрибут (`Metadata`) и
 классификация могут указывать эксперта-атрибутора (`asserted_by_person_guid`,
 ссылка на `Person`) и уровень верификации (`attribution_status`:
 `unverified` / `expert_verified` / `authoritative`). Эксперты узлов
@@ -164,8 +184,9 @@ Person "1" --> "0..*" Classification : classifications
 (каждый узел ведёт реестр своих экспертов), в конверте `persons` — контекст
 конкретного обмена (набор персон, на которые ссылаются карточки), а не
 глобальный реестр. Идентичность персоны — пара
-`(federation_node_guid, person_guid)`; `asserted_by_person_guid` разрешается
-в связке с `source_node_guid` атрибута.
+`(owner_node_guid, person_guid)`; `asserted_by_person_guid` разрешается
+в связке с `source_node_guid` атрибута. В конверте владелец персоны явный
+(поле `owner_node_guid`; по умолчанию — `sender_node_guid` конверта).
 
 Лицензии (`License`) задаются по аналогии с классификацией: код + `authority`.
 `authority` может ссылаться на любой авторитетный источник лицензий (SPDX,
@@ -173,7 +194,8 @@ Creative Commons, реестры организаций); некоммерчес
 — один из возможных авторитетных источников, а не управляющий орган сети.
 Поле `is_enabled_for_ai_using` в `Metadata` разрешает использование значения
 атрибута в обучающих данных моделей ИИ; отсутствие флага означает запрет
-(консервативный дефолт).
+(консервативный дефолт). Лицензия и флаг не отменяют друг друга: для
+использования в обучающих данных нужны оба разрешения (правило `ai.license_gate`).
 
 Сущности наследия моделируются через `entity_type` карточки (`DigitalObject`,
 `Work`, `Manifestation`, `Item`). `Work` — абстрактная сущность, которую узлы
@@ -181,11 +203,17 @@ Creative Commons, реестры организаций); некоммерчес
 атрибутных заявлений о ней, но не критерий их истинности. `Manifestation` —
 конкретная реализация или форма представления Work (`work_guid`); `Item` —
 локальный экземпляр Manifestation, учитываемый конкретным узлом
-(`manifestation_guid`, `owner_node_guid`). Различение уровней используется как
-практическая схема связывания объектов и не претендует на полное
-воспроизведение библиографической онтологии FRBR (уровень Expression сознательно
-не выделяется). Items разных узлов одной Manifestation не считаются дубликатами;
-дедупликация выполняется на уровне Work и Manifestation.
+(`manifestation_guid`, `owner_node_guid`). Условные требования (Manifestation
+⇒ `work_guid`; Item ⇒ `manifestation_guid` + `owner_node_guid`) выражены в
+JSON Schema и проверяются валидатором. Work/Manifestation/Item не являются
+отдельно адресуемыми сущностями: их роль выполняет карточка `DigitalObject`
+с соответствующим `entity_type`, поэтому связи между сущностями наследия
+указываются с типами концов `DigitalObject` (карточка несёт `entity_type`).
+Различение уровней используется как практическая схема связывания объектов
+и не претендует на полное воспроизведение библиографической онтологии FRBR
+(уровень Expression сознательно не выделяется). Items разных узлов одной
+Manifestation не считаются дубликатами; дедупликация выполняется на уровне
+Work и Manifestation.
 
 Приоритет по времени (первый регистратор) может использоваться как правило
 идентичности и права управления локальной записью, но не как критерий
@@ -218,6 +246,11 @@ Creative Commons, реестры организаций); некоммерчес
 полученные карточки на дубликаты в своей БД, добавляет атрибуты
 (`source_node_guid` — свой) и публикует связи (`candidate_match` /
 `confirmed_match` / `rejected_match`) теми же конвертами `publish`.
+Тип связи — из базового словаря `relation_type` (`same_as`, `duplicate_of`);
+расширенная семантика — через `authority`. Смена статуса связи публикуется
+как новая версия той же `Relation` (тот же `relation_guid`, обновлённый
+`modified_at`), подтвердивший узел фиксируется в `confirmed_by_node_guid` —
+наблюдатели хранят историю решений по `relation_guid` (ADR 0002).
 Получатель выполняет merge по провенансу: атрибуты с разными
 `source_node_guid` не затирают друг друга. Мастер-запись не выделяется:
 у каждого узла сохраняется собственная карточка объекта, карточки
@@ -225,9 +258,26 @@ Creative Commons, реестры организаций); некоммерчес
 
 Транспортный слой и механизм подписки на группы — предмет реализации и
 отдельной публикации; целостность и подлинность конверта обеспечиваются
-транспортным слоем (подпись, TLS).
+транспортным слоем (подпись, TLS). Бутстрап сети (кто ведёт реестр узлов и
+классификаторов без центрального оператора) — см. ADR 0001.
 
 Сценарий обмена между организациями А и Б (оцифровка → публикация →
 проверка дубликатов → обогащение → подтверждение и возврат вклада) описан
 в [примере](../examples/README.md), правила — в
 [`federated-exchange-document.rules.dsl`](federated-exchange-document.rules.dsl).
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant A as Организация А (владелец)
+    participant B as Организация Б (подписчик группы)
+    Note over A: Оцифровка и атрибутирование:<br/>Work + Manifestation карточки, эксперты,<br/>source_node_guid/attribution_status
+    A->>A: регистрация Work (первый регистратор)
+    A-->>B: publish broadcast (полный снимок)<br/>receiver_node_guid отсутствует
+    B->>B: локальная проверка на дубликаты (БК1)
+    B-->>A: publish broadcast (снимок А+Б)<br/>+ Relation same_as candidate_match
+    A->>A: merge по провенансу<br/>(атрибуты разных узлов не затираются)
+    A-->>B: подтверждение: Relation confirmed_match<br/>(confirmed_by_node_guid, modified_at)
+    A-->>B: publish targeted (receiver_node_guid = Б)<br/>возврат вклада: только атрибуты source_node_guid == Б<br/>+ встречное заявление по material (claims, unresolved)
+    Note over B: Вклад принят: Б видит свои атрибуты<br/>и статус конфликта по material
+```

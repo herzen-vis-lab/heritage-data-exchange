@@ -1,13 +1,25 @@
-# Heritage Data Exchange — правила протокола v0.0.8 (черновик)
+# Heritage Data Exchange — правила протокола v0.1.0 (черновик)
 #
 # Правила задают поведение узлов федеративной сети: валидацию документов,
 # провенанс атрибутов, жизненный цикл дедупликации, семантику конвертов,
 # согласование классификаторов. Правила исполняются каждым узлом
 # локально (governance через артефакты, а не через центральный орган).
+#
+# Слои (v0.1.0): единица обмена между узлами — ExchangeEnvelope (секция 6);
+# FederatedExchangeDocument (корневой тип модели) — полный снимок состояния
+# федерации, артефакт экспорта/резервирования, в обмене напрямую не участвует.
+# Правила секции 1 применяются к снимку состояния, правила секции 6 — к конверту.
+#
+# Машиночитаемость (v0.1.0): часть правил выражена непосредственно в JSON Schema
+# (паттерны UUID v4, RFC 3339 UTC, условные требования entity_type, status => claims).
+# Проверяемость правил — тестовый набор в /tests (см. tests/README.md и CI).
 
 # ─────────────────────────────────────────────────────────────────────────
-# 1. Валидация документа
+# 1. Валидация снимка состояния (document)
 # ─────────────────────────────────────────────────────────────────────────
+# Корневой FederatedExchangeDocument описывает полный снимок состояния
+# федерации (экспорт/резерв). В обмене узлы передают ExchangeEnvelope
+# (секция 6) — конверт, а не снимок.
 
 rule document.required_fields {
   description: "Документ обмена обязан содержать идентификатор, стандарт, версию и метку времени"
@@ -16,9 +28,16 @@ rule document.required_fields {
 }
 
 rule document.uuid_format {
-  description: "Все глобальные идентификаторы — UUID v4, нижний регистр, неизменяемы после присвоения"
+  description: "Все глобальные идентификаторы — UUID v4, нижний регистр, неизменяемы после присвоения; выражено в JSON Schema ($defs.Uuid4: паттерн версии и варианта, lowercase)"
   pattern: uuid_v4_lowercase
-  scope: federation_node_guid, digital_object_guid, person_guid, relation_guid, source_node_guid, asserted_by_node_guid
+  scope: federation_node_guid, digital_object_guid, person_guid, relation_guid, source_node_guid, asserted_by_node_guid, owner_node_guid, confirmed_by_node_guid
+  on_violation: reject_document
+}
+
+rule document.timestamp {
+  description: "Все метки времени — RFC 3339 UTC с суффиксом Z (без произвольных offset); выражено в JSON Schema ($defs.TimestampRfc3339Utc)"
+  pattern: rfc3339_utc_Z
+  scope: generated_at, created_at, modified_at, confirmed_at
   on_violation: reject_document
 }
 
@@ -63,7 +82,7 @@ rule object.local_identifier {
 }
 
 rule object.media {
-  description: "Каждая карточка обязана ссылаться на цифровую репрезентацию (media) и каноническую запись (record)"
+  description: "Карточка рекомендовано снабжать ссылками на цифровую репрезентацию (media) и каноническую запись (record). Для абстрактного Work media может отсутствовать (схема не требует; рекомендация — не блокирующее правило)"
   require: digital_object_media_url, record_url
   on_violation: warn
 }
@@ -104,6 +123,12 @@ rule metadata.conflict {
   on_conflict: keep_both_with_provenance
 }
 
+rule metadata.claims_status {
+  description: "Атрибут с объявленным статусом конфликта (status: unresolved/canonical/rejected) обязан нести массив claims, на который статус ссылается; выражено в JSON Schema (if status present then claims required)"
+  require: claims for each metadata item with status
+  on_violation: drop_attribute
+}
+
 rule classification.authority {
   description: "Классификация обязана ссылаться на авторитетный словарь; коды без authority не распространяются"
   require: authority for each classification item
@@ -130,10 +155,10 @@ rule dedup.candidate {
 }
 
 rule dedup.confirm {
-  description: "candidate_match переводится в confirmed_match при согласии обеих сторон (обе карточки участвуют) или по решению авторитетного узла; результат публикуется конвертом publish"
+  description: "candidate_match переводится в confirmed_match при согласии обеих сторон (обе карточки участвуют) или по решению авторитетного узла; результат публикуется конвертом publish. Узел, переведший связь, фиксируется в confirmed_by_node_guid"
   condition: confirmed_by(source_node) AND confirmed_by(target_node)
   alt_condition: authority_decision(relation.authority)
-  action: publish Relation(status = confirmed_match)
+  action: publish Relation(status = confirmed_match, confirmed_by_node_guid = self)
 }
 
 rule dedup.reject {
@@ -146,6 +171,18 @@ rule dedup.enrichment {
   description: "После confirmed_match атрибуты обеих карточек взаимно обогащаются; каждая сторона сохраняет провенанс своих атрибутов"
   action: merge_attributes(card_a, card_b) with provenance
   result: publish broadcast с полным снимком (атрибуты обеих сторон)
+}
+
+rule relation.types {
+  description: "Тип связи — из базового словаря relation_type (same_as, duplicate_of); расширенная семантика — через authority URI; расширения словаря — в реестре отношений федерации. Work/Manifestation/Item не являются адресуемыми типами связи: они значения entity_type карточки DigitalObject, поэтому связь между сущностями наследия указывает на карточки с source_type/target_type = DigitalObject"
+  vocabulary: relation_type in [same_as, duplicate_of] + authority for semantics
+  on_violation: reject_envelope
+}
+
+rule relation.versioning {
+  description: "Смена статуса связи публикуется как новая версия той же Relation (тот же relation_guid) с обновлённым modified_at (created_at первой версии сохраняется); подтвердивший узел фиксируется в confirmed_by_node_guid. Наблюдатели хранят историю по relation_guid — протокольный след решений о связях"
+  action: republish Relation(guid, status, modified_at) — history by relation_guid
+  on_violation: warn
 }
 
 rule merge.provenance {
@@ -254,6 +291,13 @@ rule ai.usage {
 rule ai.attribution {
   description: "При использовании атрибутов в обучающих данных сохраняется атрибуция: source_node_guid и asserted_by_person_guid не удаляются"
   require: provenance preserved in derived datasets
+  on_violation: reject_ai_usage
+}
+
+rule ai.license_gate {
+  description: "Лицензия и флаг ИИ не отменяют друг друга: для использования значения атрибута в обучающих данных требуются одновременно разрешающая лицензия объекта (license) и is_enabled_for_ai_using = true; флаг — более узкое внутрифедеративное ограничение поверх лицензии"
+  condition: usable_for_ai_training iff (license allows) AND (is_enabled_for_ai_using == true)
+  default: false
   on_violation: reject_ai_usage
 }
 
